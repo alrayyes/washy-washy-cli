@@ -9,14 +9,16 @@ is where the prose explanation lives; this file is the set of traps.
 Reads `data/washy-washy.json` — appliances under `machine`, one row per pile
 under `chart` — and renders six PDFs: a single tall page for the phone and an
 A4 reference sheet plus detail cards for printing, each in three cuts —
-everything, washing only, ironing only. That file is gitignored — one
-household's laundry is nobody else's business — so the committed config is
-`data/washy-washy.json.dist` and the CLI falls back to it. Tests and CI read
-the `.dist`; never point them at the other one.
+everything, washing only, ironing only. Also writes one small card PDF per
+pile (or shared-card group), for reprinting a single card without the rest of
+the sheet. That file is gitignored — one household's laundry is nobody else's
+business — so the committed config is `data/washy-washy.json.dist` and the
+CLI falls back to it. Tests and CI read the `.dist`; never point them at the
+other one.
 
 ## Commands
 
-- `bun run generate` — write all six PDFs to `out/`
+- `bun run generate` — write all six PDFs, plus one card PDF per pile, to `out/`
 - `bun run new-config [path]` — scaffold a fresh config (placeholder machine,
   one placeholder pile); default path `data/washy-washy.json`. Refuses to
   overwrite an existing file
@@ -100,4 +102,6 @@ the `.dist`; never point them at the other one.
   the exception — the README links them — and they are written by
   `bun run examples`, which names the `.dist` config, so your own appliances
   cannot get into them. A test in `test/generate.test.ts` fails while they are
-  stale.
+  stale. `bun run examples` also drops the per-pile card PDFs into `docs/`,
+  same as any other run — too many to showcase, so `.gitignore` excludes
+  `docs/washy-washy-card-*.pdf` rather than growing the committed set.

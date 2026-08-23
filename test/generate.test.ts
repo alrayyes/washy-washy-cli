@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { inflateSync } from "node:zlib";
 import { cardGroups, configToJson, parseInstructions } from "@washy-washy/core";
 import { PDFDocument, PDFName, PDFRawStream } from "pdf-lib";
+import { slug } from "../src/cli";
 import { loadConfig } from "../src/config";
 
 // The committed dummy config, not `data/washy-washy.json` — that one is
@@ -268,6 +269,44 @@ describe("bun run generate", () => {
 
   test("says which appliances it drew for", () => {
     expect(stdout).toContain("Generic front loader");
+  });
+
+  /**
+   * One PDF per card, not per pile — a pile sharing a card with another
+   * (Merino Wool + Cashmere Blend) shares its file too, matching what
+   * `renderPrint` already draws as a single card for both.
+   */
+  describe("per-pile card PDFs", () => {
+    test("writes one card PDF per card group, named after its piles", async () => {
+      const { config } = await loadConfig(CONFIG);
+      const cards = cardGroups(config.chart);
+      expect(stdout).toContain(`${cards.length} card PDF`);
+
+      expect(await Bun.file(join(out, "washy-washy-card-white.pdf")).exists()).toBe(true);
+      expect(
+        await Bun.file(join(out, "washy-washy-card-merino-wool+cashmere-blend.pdf")).exists(),
+      ).toBe(true);
+    });
+
+    test("renders a pile's reference citation on its own card", async () => {
+      const pdf = await readFile(join(out, "washy-washy-card-merino-wool+cashmere-blend.pdf"));
+      const text = await words(pdf);
+      expect(text).toContain("Icebreaker on merino");
+    });
+
+    test("keeps every card to one page, nothing near-blank", async () => {
+      const { config } = await loadConfig(CONFIG);
+      for (const group of cardGroups(config.chart)) {
+        const name = group.map((item) => slug(item.clothingType)).join("+");
+        const pdf = await PDFDocument.load(
+          await readFile(join(out, `washy-washy-card-${name}.pdf`)),
+        );
+
+        expect(pdf.getPageCount()).toBe(1);
+        const stream = pdf.context.lookup(pdf.getPage(0).node.get(PDFName.of("Contents")));
+        expect(stream instanceof PDFRawStream ? stream.contents.length : 0).toBeGreaterThan(1000);
+      }
+    });
   });
 
   /**

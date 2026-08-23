@@ -8,7 +8,7 @@ import {
   resolve,
   type Variant,
 } from "@washy-washy/core";
-import { renderPhone, renderPrint } from "@washy-washy/pdf";
+import { renderCard, renderPhone, renderPrint } from "@washy-washy/pdf";
 import { loadConfig } from "./config";
 
 const DEFAULT_CONFIG = "data/washy-washy.json";
@@ -42,6 +42,14 @@ export function outputStem(path: string): string {
   return basename(path)
     .replace(/\.dist$/i, "")
     .replace(/\.json$/i, "");
+}
+
+/** A card group's filesystem-safe stand-in, for its own PDF's filename. */
+export function slug(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 }
 
 interface Args {
@@ -102,14 +110,31 @@ async function main(argv: string[]): Promise<void> {
     ]),
   );
 
+  const cards = cardGroups(items);
+  const cardPaths = await Promise.all(
+    cards.map(async (group) => {
+      const path = join(
+        out,
+        `${stem}-card-${group.map((item) => slug(item.clothingType)).join("+")}.pdf`,
+      );
+      const card = await renderCard(group, machine);
+      for (const character of card.dropped) dropped.add(character);
+      await writeFile(path, card.pdf);
+      return path;
+    }),
+  );
+
   const groups = loadGroups(items).filter((group) => group.length > 1);
-  const merged = cardGroups(items).filter((group) => group.length > 1);
+  const merged = cards.filter((group) => group.length > 1);
   const names = (group: ResolvedInstruction[]) =>
     group.map((item) => item.clothingType).join(" + ");
 
   console.log(`Read ${items.length} piles from ${resolvePath(file)}`);
   console.log(`  drawn for ${machine.washer.name} · ${machine.iron.name}`);
   for (const line of written) console.log(`  ${line}`);
+  console.log(
+    `  ${cardPaths.length} card PDF${cardPaths.length === 1 ? "" : "s"}, one per pile or shared-card group`,
+  );
   if (groups.length > 0) {
     console.log("\nPiles that can share a drum:");
     // Padded so the run times line up, which is the column you read down.
