@@ -116,6 +116,7 @@ Read 17 piles from /home/you/washy-washy/data/washy-washy.json.dist
   out/washy-washy-print-washing.pdf
   out/washy-washy-phone-ironing.pdf  one page, 1059 pt tall (9 layout passes)
   out/washy-washy-print-ironing.pdf
+  16 card PDFs, one per pile or shared-card group
 
 Piles that can share a drum:
   White + White Socks           ~2:30
@@ -134,8 +135,8 @@ bun run generate my-laundry.json --out ~/Documents
 ```
 
 The output filenames follow the input, so `my-laundry.json` gives you
-`my-laundry-phone.pdf`, `my-laundry-print.pdf` and the four split sheets
-beside them.
+`my-laundry-phone.pdf`, `my-laundry-print.pdf`, the four split sheets and a
+`my-laundry-card-<pile>.pdf` per pile, all beside them.
 
 ### The split sheets
 
@@ -159,6 +160,16 @@ are never ironed gather on a last card of their own, which is worth printing —
 Neither is a subset you could have got by folding a printout. The grouping is
 different, the tables carry different columns, and the phone sheet is measured
 to its own height.
+
+### Per-pile cards
+
+Alongside the six sheets, every run also writes one small card PDF per pile —
+`out/washy-washy-card-<pile>.pdf`, sized to the card the way the phone sheet is
+sized to the chart. It's the same card the printable sheet gives that pile, on
+its own page, for reprinting one without the rest of the sheet — a card that
+got a coffee spilled on it, or a pile you added mid-week. Piles set up
+identically on both appliances share a card and a file, named after all of
+them: `<pile-a>+<pile-b>`.
 
 ### Without installing anything
 

@@ -10,6 +10,10 @@ out
 dist
 *.tgz
 
+# per-pile card PDFs `bun run examples` also drops into docs/ — the six
+# sheets the README links stay committed; these are too many to showcase
+docs/washy-washy-card-*.pdf
+
 # code coverage
 coverage
 *.lcov
