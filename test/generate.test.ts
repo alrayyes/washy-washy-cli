@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { inflateSync } from "node:zlib";
 import { cardGroups, configToJson, parseInstructions } from "@washy-washy/core";
 import { PDFDocument, PDFName, PDFRawStream } from "pdf-lib";
-import { slug } from "../src/cli";
+import { main, slug } from "../src/cli";
 import { loadConfig } from "../src/config";
 
 // The committed dummy config, not `data/washy-washy.json` — that one is
@@ -71,6 +71,36 @@ async function drawing(pdf: Buffer): Promise<string[]> {
 }
 
 /**
+ * Runs the CLI's real entry point in-process — the same `main()` a real
+ * invocation calls, minus the `process.exit()` a subprocess would need.
+ * Calling it directly, rather than shelling out to `bun run src/cli.ts`,
+ * is what lets `bun test --coverage` see it execute at all: coverage
+ * instrumentation only tracks the process bun:test runs in, and a spawned
+ * child is invisible to it.
+ */
+async function run(argv: string[]): Promise<{ stdout: string; exitCode: number }> {
+  const lines: string[] = [];
+  const originalLog = console.log;
+  const originalError = console.error;
+  console.log = (...args: unknown[]) => lines.push(args.join(" "));
+  console.error = (...args: unknown[]) => lines.push(args.join(" "));
+
+  let exitCode = 0;
+  try {
+    await main(argv);
+  } catch (error) {
+    // Mirrors the real error handling in cli.ts's `if (import.meta.main)`
+    // block, minus the `process.exit()` that would kill the test runner.
+    console.error(error instanceof Error ? error.message : String(error));
+    exitCode = 1;
+  } finally {
+    console.log = originalLog;
+    console.error = originalError;
+  }
+  return { stdout: lines.join("\n"), exitCode };
+}
+
+/**
  * The outer test: run the tool exactly as a person would and check the two
  * PDFs that come out. Anything below this — parsing, mixing rules, layout —
  * only exists to make this pass.
@@ -82,16 +112,12 @@ describe("bun run generate", () => {
 
   beforeAll(async () => {
     out = await mkdtemp(join(tmpdir(), "washing-"));
-    const result = Bun.spawnSync({
-      // Named explicitly. The default prefers your own config, which is
-      // right for a person at a terminal and wrong for a test that has to
-      // mean the same thing on every clone.
-      cmd: ["bun", "run", "src/cli.ts", CONFIG, "--out", out],
-      stdout: "pipe",
-      stderr: "pipe",
-    });
+    // Named explicitly. The default prefers your own config, which is right
+    // for a person at a terminal and wrong for a test that has to mean the
+    // same thing on every clone.
+    const result = await run([CONFIG, "--out", out]);
     exitCode = result.exitCode;
-    stdout = result.stdout.toString() + result.stderr.toString();
+    stdout = result.stdout;
   }, 120_000);
 
   afterAll(async () => {
@@ -363,14 +389,9 @@ describe("bun run generate, a different machine", () => {
     const chart = parseInstructions(csv, machine);
     await writeFile(config, configToJson({ machine, chart }));
 
-    const result = Bun.spawnSync({
-      cmd: ["bun", "run", "src/cli.ts", config, "--out", dir],
-      stdout: "pipe",
-      stderr: "pipe",
-    });
-    const output = result.stdout.toString() + result.stderr.toString();
+    const result = await run([config, "--out", dir]);
 
-    expect(output).toContain("Zanussi ZWF");
+    expect(result.stdout).toContain("Zanussi ZWF");
     expect(result.exitCode).toBe(0);
     expect(await Bun.file(join(dir, "config-print.pdf")).exists()).toBe(true);
 
@@ -402,14 +423,55 @@ describe("bun run generate, a different machine", () => {
     const { chart } = JSON.parse(await readFile(CONFIG, "utf8"));
     await writeFile(config, JSON.stringify({ machine: otherMachine, chart }));
 
-    const result = Bun.spawnSync({
-      cmd: ["bun", "run", "src/cli.ts", config, "--out", dir],
-      stdout: "pipe",
-      stderr: "pipe",
-    });
+    const result = await run([config, "--out", dir]);
 
     expect(result.exitCode).toBe(1);
-    expect(result.stderr.toString()).toMatch(/row 2, column "(program|options)"/);
+    expect(result.stdout).toMatch(/row 2, column "(program|options)"/);
+
+    await rm(dir, { recursive: true, force: true });
+  }, 60_000);
+});
+
+/**
+ * Only Helvetica is embedded, so glyphs outside WinAnsi silently vanish from
+ * the PDF unless the CLI says so. "→" has no WinAnsi equivalent — it's the
+ * example CLAUDE.md itself names for one that gets stripped rather than
+ * transliterated.
+ */
+describe("bun run generate, a chart with non-WinAnsi text", () => {
+  test("warns which characters the font can't render", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "dropped-"));
+    const config = join(dir, "config.json");
+
+    const machine = {
+      washer: {
+        name: "Test Washer",
+        capacity: "7 kg",
+        programs: ["Cottons", "Wool"],
+        temperatures: ["40"],
+        spins: ["1200"],
+        options: [],
+      },
+      iron: {
+        name: "Test Iron",
+        settings: [
+          { key: "1", dots: "•", label: "•", detail: "", steam: false },
+          { key: "2", dots: "••", label: "••", detail: "", steam: true },
+        ],
+      },
+    };
+    const csv =
+      "clothing_type,detergent,fabric_softener,temperature,spin,duration,program,options," +
+      "ironing,ironing_notes,iron_setting,drying,colour_group,mix_tags,notes,reference_name,reference_link\n" +
+      "Towels,Powder,no,40,1200,~2:00,Cottons,,no,,,Tumble dry,white,,Dries fast → check dial,,\n";
+    const chart = parseInstructions(csv, machine);
+    await writeFile(config, configToJson({ machine, chart }));
+
+    const result = await run([config, "--out", dir]);
+
+    expect(result.exitCode).toBe(0);
+    expect(result.stdout).toContain("Characters the font can't render");
+    expect(result.stdout).toContain("→");
 
     await rm(dir, { recursive: true, force: true });
   }, 60_000);

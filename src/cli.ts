@@ -81,7 +81,7 @@ export function parseArgs(argv: string[]): Args {
   return { config, out };
 }
 
-async function main(argv: string[]): Promise<void> {
+export async function main(argv: string[]): Promise<void> {
   const { config: requested, out } = parseArgs(argv);
   const { file, config } = await loadConfig(requested);
   const { machine, chart } = config;
