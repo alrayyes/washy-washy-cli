@@ -108,13 +108,13 @@ bun run generate
 ```
 
 ```text
-Read 16 piles from /home/you/washy-washy/data/washy-washy.json.dist
+Read 17 piles from /home/you/washy-washy/data/washy-washy.json.dist
   drawn for Generic front loader · Generic steam iron
-  out/washy-washy-phone.pdf  one page, 6225 pt tall (11 layout passes)
+  out/washy-washy-phone.pdf  one page, 6837 pt tall (11 layout passes)
   out/washy-washy-print.pdf
-  out/washy-washy-phone-washing.pdf  one page, 4272 pt tall (10 layout passes)
+  out/washy-washy-phone-washing.pdf  one page, 4756 pt tall (10 layout passes)
   out/washy-washy-print-washing.pdf
-  out/washy-washy-phone-ironing.pdf  one page, 900 pt tall (9 layout passes)
+  out/washy-washy-phone-ironing.pdf  one page, 1059 pt tall (9 layout passes)
   out/washy-washy-print-ironing.pdf
 
 Piles that can share a drum:
