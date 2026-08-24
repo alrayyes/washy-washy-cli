@@ -2,7 +2,7 @@
   "name": "washy-washy",
   "version": "0.0.0",
   "private": true,
-  "description": "Turns a CSV of laundry piles into a phone PDF and a printable PDF, drawn for one specific washing machine and iron.",
+  "description": "Turns a JSON chart of laundry piles into a phone PDF and a printable PDF, drawn for one specific washing machine and iron.",
   "license": "GPL-3.0-or-later",
   "type": "module",
   "scripts": {
@@ -17,7 +17,6 @@
     "lint:prose:advice": ".tools/vale --glob='!{styles/**,CHANGELOG.md}' .",
     "lint:prose:ltex": "bun run scripts/lint-prose-ltex.ts",
     "lint:yaml": "prettier --check \"**/*.{yml,yaml}\"",
-    "migrate-config": "bun run scripts/migrate-config.ts",
     "new-config": "bun run scripts/new-config.ts",
     "prepare": "lefthook install",
     "prose:sync": "bun run scripts/install-vale.ts && .tools/vale sync",

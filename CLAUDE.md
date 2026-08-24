@@ -25,9 +25,6 @@ other one.
 - `bun run validate-config [path]` — same validation `generate` does, without
   drawing anything; default path `data/washy-washy.json` (so a fresh clone
   with no file of your own validates the `.dist`)
-- `bun run migrate-config` — one-off conversion from the old
-  `data/machine.json` + `data/washing-instructions.csv` pair to
-  `data/washy-washy.json`
 - `bun run examples` — redraw the six PDFs under `docs/` that the README links,
   from the `.dist` config
 - `docker build -t washy-washy . && docker run --rm -v "$PWD/out:/out" washy-washy`
@@ -36,16 +33,16 @@ other one.
 - `bun run check` — every linter, `tsc --noEmit` and the tests, in that order
 - `bun run format` — Prettier over the Markdown and YAML; it owns those and nothing else
 - `bun run prose:sync` — fetch Vale's style packages; needed once before `check` works
-- `bun test test/csv.test.ts` — one file, when iterating
+- `bun test test/config.test.ts` — one file, when iterating
 
 ## Gotchas
 
 - **Only Helvetica is embedded**, so glyphs are limited to WinAnsi. `•`, `°`,
   `—`, `–` and `'` are safe; `≈`, `✓`, `→` and curly quotes silently drop out of
-  the PDF. Check any new prose in the CSV before committing it.
+  the PDF. Check any new prose in the chart before committing it.
 - **The phone page height is measured, not chosen.** `renderPhone` renders the
   document repeatedly and bisects until it fits on one page. Don't replace it
-  with a constant — adding a sentence to the CSV would push a card onto page two.
+  with a constant — adding a sentence to the chart would push a card onto page two.
 - **The appliances are data.** They're the `machine` key of `data/washy-washy.json`,
   and every programme, temperature, spin speed and button in the `chart` key
   is checked against them. The dial angles come from the order of
@@ -82,8 +79,8 @@ other one.
   and both packages' own repos are four separate repos, split out of what
   used to be one monorepo. Bumping either is an ordinary dependency update,
   pinned to an exact version like everything else. File I/O (`loadConfig`,
-  `loadMachine`, reading the CSV) stays in this repo; the packages only
-  ever take file contents as a string or a parsed value.
+  `loadMachine`) stays in this repo; the packages only ever take file
+  contents as a string or a parsed value.
 - **A sheet is defined by what it leaves out**, so `test/generate.test.ts`
   inflates the content streams and reads the words back. Adding an iron word to
   the washing sheet fails there, not in review.

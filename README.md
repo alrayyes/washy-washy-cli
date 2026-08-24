@@ -15,8 +15,8 @@ something real — do not add one that reads "unknown".
 
 Nobody remembers whether the towels go in at 40 or 60, which button stops the
 black t-shirts coming out streaky, or where on the dial "Fijn/Zijde" actually
-is. This turns a CSV of laundry piles into PDFs that answer all of it, in two
-shapes:
+is. This turns a JSON chart of laundry piles into PDFs that answer all of it,
+in two shapes:
 
 - **`out/washy-washy-phone.pdf`** — one tall, narrow page you scroll
   through on your phone while standing in front of the machine.
@@ -299,22 +299,6 @@ PDF that tells you to turn the dial somewhere it does not go:
 ```text
 row 8, column "program": "Cottons" is not one of Uit, Katoen, Katoen + Voorwas, ...
 ```
-
-### Migrating from the old two-file setup
-
-Earlier versions kept the appliances in `data/machine.json` and the chart in
-`data/washing-instructions.csv`. If you still have those,
-`bun run migrate-config` reads them (falling back to their own `.dist`
-examples the same way) and writes the combined
-`data/washy-washy.json`:
-
-```sh
-bun run migrate-config [machine.json] [chart.csv] [out.json]
-```
-
-All three arguments default to the old paths and the new one, so
-`bun run migrate-config` alone does the right thing for a setup that has not
-moved yet.
 
 ### Let a chatbot write the first draft
 

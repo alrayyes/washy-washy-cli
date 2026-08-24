@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   CONFIG_SCHEMA_URL,
+  chartFromJson,
   chartToJson,
   configFromJson,
   configToJson,
@@ -82,6 +83,28 @@ describe("configToJson / configFromJson", () => {
 
     expect(Object.keys(written)[0]).toBe("$schema");
     expect(written.$schema).toBe(CONFIG_SCHEMA_URL);
+  });
+});
+
+describe("the JSON chart format", () => {
+  test("round-trips a chart without losing or changing anything", () => {
+    const original = parseInstructions(csv(), machine);
+    const roundTripped = chartFromJson(chartToJson(original), machine);
+    expect(roundTripped).toEqual(original);
+  });
+
+  test("rejects a JSON chart that is not an array", () => {
+    expect(() => chartFromJson("{}", machine)).toThrow(/must be a JSON array/);
+  });
+
+  test("rejects a JSON chart that is not valid JSON", () => {
+    expect(() => chartFromJson("not json", machine)).toThrow(/not valid JSON/);
+  });
+
+  test("applies the same machine-facing validation as the CSV parser", () => {
+    const [row] = JSON.parse(chartToJson(parseInstructions(csv(), machine)));
+    row.program = "Turbo Wash";
+    expect(() => chartFromJson(JSON.stringify([row]), machine)).toThrow(/column "program"/);
   });
 });
 
