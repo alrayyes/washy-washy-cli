@@ -38,7 +38,7 @@ async function inkPerPage(bytes: Uint8Array): Promise<number[]> {
 
 describe("renderPrint", () => {
   /**
-   * Adding a pile is a CSV edit, and it costs the reference sheet a row in the
+   * Adding a pile is a chart edit, and it costs the reference sheet a row in the
    * summary table and another in the matrix. Past fifteen or so piles that runs
    * off the bottom of the A4, and @react-pdf answers a page it cannot fit with
    * an almost empty sheet rather than an error.
