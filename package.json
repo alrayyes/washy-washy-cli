@@ -6,6 +6,8 @@
   "license": "GPL-3.0-or-later",
   "type": "module",
   "scripts": {
+    "build:binaries": "bun build --compile --target=bun-linux-x64 --outfile=dist/washy-washy-cli-linux-x64 src/cli.ts && bun build --compile --target=bun-linux-arm64 --outfile=dist/washy-washy-cli-linux-arm64 src/cli.ts",
+    "build:man": "mkdir -p dist && scdoc < man/washy-washy-cli.1.scd > dist/washy-washy-cli.1 && gzip -f dist/washy-washy-cli.1",
     "check": "bun run lint && bun run lint:md && bun run lint:package-json && bun run lint:yaml && bun run lint:prose && bun run lint:prose:ltex && bun run validate-config && bun run typecheck && bun test",
     "examples": "bun run src/cli.ts data/washy-washy.json.dist --out docs",
     "format": "prettier --write .",
