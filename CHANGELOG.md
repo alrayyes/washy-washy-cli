@@ -4,6 +4,39 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.0.0](https://github.com/alrayyes/washy-washy-cli/compare/v2.16.0...v3.0.0) (2026-08-31)
+
+
+### ⚠ BREAKING CHANGES
+
+* `bun run migrate-config` no longer exists. Anyone still on the old data/machine.json + data/washing-instructions.csv setup needs to hand-write data/washy-washy.json instead (see the README for the format), or migrate before upgrading.
+* bump @washy-washy/pdf to 2.0.1 (breaking: render return shape, non-WinAnsi reporting) ([#131](https://github.com/alrayyes/washy-washy-cli/issues/131))
+
+### Features
+
+* bump @washy-washy/core to 1.3.0 (per-row reference citations) ([#127](https://github.com/alrayyes/washy-washy-cli/issues/127)) ([112eb74](https://github.com/alrayyes/washy-washy-cli/commit/112eb742a9f1707ac5e43aa730893d8de7faa0d6)), closes [#125](https://github.com/alrayyes/washy-washy-cli/issues/125)
+* package the CLI for AUR, deb, and rpm ([#151](https://github.com/alrayyes/washy-washy-cli/issues/151)) ([2c5bef6](https://github.com/alrayyes/washy-washy-cli/commit/2c5bef61124e3d03ed149359d67b1de29bf9c712))
+* swap @washy-washy/core and @washy-washy/pdf for published versions ([#113](https://github.com/alrayyes/washy-washy-cli/issues/113)) ([f7b4f45](https://github.com/alrayyes/washy-washy-cli/commit/f7b4f45887b98b7b1bdee9326b7962cb2e7a85fb)), closes [#94](https://github.com/alrayyes/washy-washy-cli/issues/94)
+* write a per-pile card PDF using @washy-washy/pdf's renderCard ([#137](https://github.com/alrayyes/washy-washy-cli/issues/137)) ([4b5290a](https://github.com/alrayyes/washy-washy-cli/commit/4b5290a4e281f80baf2242f64203ce1e7e3ef6ca))
+
+
+### Bug Fixes
+
+* .gitignore never updated for the combined config ([#119](https://github.com/alrayyes/washy-washy-cli/issues/119)) ([2a597f3](https://github.com/alrayyes/washy-washy-cli/commit/2a597f3ebbf02115f8ad80dbed5d7d740de3ad36)), closes [#118](https://github.com/alrayyes/washy-washy-cli/issues/118)
+* bump @washy-washy/core to 1.3.1 (duration field validation) ([#135](https://github.com/alrayyes/washy-washy-cli/issues/135)) ([0b1f067](https://github.com/alrayyes/washy-washy-cli/commit/0b1f067e02845ddc1e18709623ffd5921752f9f8))
+* bump @washy-washy/pdf to 1.0.2 (two correctness fixes) ([#115](https://github.com/alrayyes/washy-washy-cli/issues/115)) ([f458914](https://github.com/alrayyes/washy-washy-cli/commit/f4589148a35197c1cc0999fe214ed432ad7f42e3)), closes [#114](https://github.com/alrayyes/washy-washy-cli/issues/114)
+* bump @washy-washy/pdf to 1.0.3 (mix matrix contrast) ([#122](https://github.com/alrayyes/washy-washy-cli/issues/122)) ([e64e12a](https://github.com/alrayyes/washy-washy-cli/commit/e64e12a8ce5a8c6f34f1146b2244865d4e2e1ef9)), closes [#120](https://github.com/alrayyes/washy-washy-cli/issues/120)
+* bump @washy-washy/pdf to 2.0.1 (breaking: render return shape, non-WinAnsi reporting) ([#131](https://github.com/alrayyes/washy-washy-cli/issues/131)) ([d086379](https://github.com/alrayyes/washy-washy-cli/commit/d086379f2d38442b32f42ac3dbe91656a433fd64)), closes [#128](https://github.com/alrayyes/washy-washy-cli/issues/128)
+* bump @washy-washy/pdf to 2.3.5 (near-blank continuation pages) ([#136](https://github.com/alrayyes/washy-washy-cli/issues/136)) ([f72a0e0](https://github.com/alrayyes/washy-washy-cli/commit/f72a0e070f67017599755d095564aed27be1f028))
+* **deps:** bump oven/bun from 1.3.14-alpine to 1.4.0-alpine ([dce5bec](https://github.com/alrayyes/washy-washy-cli/commit/dce5beca775ae68211a66340dfdc4b79371f3173))
+* migrate-config/new-config now write biome-formatted JSON ([#117](https://github.com/alrayyes/washy-washy-cli/issues/117)) ([b765bc9](https://github.com/alrayyes/washy-washy-cli/commit/b765bc92fe9fe73ea327a3e0be6b4fc1713df036)), closes [#116](https://github.com/alrayyes/washy-washy-cli/issues/116)
+* **release:** bootstrap release-please from the migration commit ([#154](https://github.com/alrayyes/washy-washy-cli/issues/154)) ([ee607a6](https://github.com/alrayyes/washy-washy-cli/commit/ee607a6dc2f4d5f8bab33f3d17c0e6043d98ab12))
+
+
+### Miscellaneous Chores
+
+* drop leftover CSV migration tooling and docs ([#141](https://github.com/alrayyes/washy-washy-cli/issues/141)) ([df27a32](https://github.com/alrayyes/washy-washy-cli/commit/df27a3286313df170912eabddc39b7da3f528db5)), closes [#140](https://github.com/alrayyes/washy-washy-cli/issues/140)
+
 ## [2.15.0](https://github.com/alrayyes/washy-washy-cli/compare/v2.14.0...v2.15.0) (2026-08-22)
 
 ### Features
