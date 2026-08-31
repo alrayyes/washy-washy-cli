@@ -12,7 +12,7 @@
 import { mkdir } from "node:fs/promises";
 
 const LTEX_VERSION = "18.7.0";
-const DOCS = ["README.md", "CONTRIBUTING.md", "CLAUDE.md", "SECURITY.md"];
+const DOCS = ["README.md", "CONTRIBUTING.md", "CLAUDE.md", "SECURITY.md", "INSTALL.md"];
 
 const cacheRoot = process.env.XDG_CACHE_HOME ?? `${process.env.HOME}/.cache`;
 const installRoot = `${cacheRoot}/ltex`;
