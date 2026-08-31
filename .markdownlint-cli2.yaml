@@ -38,6 +38,10 @@ ignores:
   # Vendored by `vale sync`. Generated text belongs to nobody.
   - "styles/Google/**"
   - "styles/proselint/**"
+  # Vendored by `openspec init`/`openspec update`. Same reasoning: generated
+  # skill and command docs belong to the OpenSpec CLI, not to this repo's
+  # prose conventions.
+  - ".claude/**"
   # Written by semantic-release from the commit subjects, and committed by the
   # release job without passing through any hook. Linting it means failing a
   # run over prose no human chose and no human can fix in place.

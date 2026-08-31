@@ -46,6 +46,7 @@ pre-commit:
       glob: "*.md"
       exclude:
         - CHANGELOG.md
+        - ".claude/**"
       run: .tools/vale --minAlertLevel=error {staged_files}
 
 commit-msg:
