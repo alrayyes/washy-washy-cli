@@ -161,6 +161,153 @@ jobs:
           test -s out/washy-washy-phone.pdf
           test -s out/washy-washy-print.pdf
 
+  # The three jobs below prove each OS package actually installs and runs,
+  # not just that it builds -- same reasoning as the `dockerfile` job
+  # above, applied to AUR/deb/rpm. Each builds its own binary and package
+  # locally rather than fetching a published release, so these catch a
+  # regression on every pull request, not only after a real release
+  # exists to test against. See openspec/changes/add-os-packaging/
+  # design.md for why the build step specifically needs Bun's official
+  # installer (not a distro package) and, for deb, why the install step
+  # needs the non-slim Debian image.
+  deb-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build the binary, man page, and .deb
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work \
+            debian:bookworm-slim@sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171 \
+            bash -c '
+              set -euo pipefail
+              apt-get update -qq
+              apt-get install -y -qq curl unzip ca-certificates scdoc gettext-base
+              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.3.14
+              export PATH=/usr/local/bin:$PATH
+              bun build --compile --target=bun-linux-x64 --outfile=dist/washy-washy-cli-linux-amd64 src/cli.ts
+              scdoc < man/washy-washy-cli.1.scd > dist/washy-washy-cli.1
+              gzip -f dist/washy-washy-cli.1
+              curl -fsSL -o /tmp/nfpm.deb https://github.com/goreleaser/nfpm/releases/download/v2.44.1/nfpm_2.44.1_amd64.deb
+              apt-get install -y -qq /tmp/nfpm.deb
+              NFPM_ARCH=amd64 NFPM_GOARCH=amd64 NFPM_VERSION=0.0.0-ci \
+                envsubst \"\$NFPM_ARCH,\$NFPM_GOARCH,\$NFPM_VERSION\" < nfpm.yaml > /tmp/nfpm.yaml
+              nfpm package --config /tmp/nfpm.yaml --packager deb --target dist/washy-washy-cli-ci_amd64.deb
+            '
+      # Not -slim: it path-excludes /usr/share/man and /usr/share/doc
+      # (Docker's own size-reduction default, not anything a real
+      # Debian/Ubuntu install carries), which would silently pass this
+      # check even if the man page never shipped.
+      - name: Install and run in a real Debian container
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work \
+            debian:bookworm@sha256:6ebd97fa83deb272194a2cf015b3d26a4d538e9ad3a7a79d544c8af5b0a01443 \
+            bash -c '
+              set -euo pipefail
+              apt-get update -qq && apt-get install -y -qq man-db
+              dpkg -i dist/washy-washy-cli-ci_amd64.deb
+              washy-washy-cli data/washy-washy.json.dist --out /tmp/out
+              test -s /tmp/out/washy-washy-phone.pdf
+              test -s /tmp/out/washy-washy-print.pdf
+              man washy-washy-cli | grep -q "turn a laundry chart"
+            '
+
+  rpm-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build the binary, man page, and .rpm
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work \
+            debian:bookworm-slim@sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171 \
+            bash -c '
+              set -euo pipefail
+              apt-get update -qq
+              apt-get install -y -qq curl unzip ca-certificates scdoc gettext-base
+              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.3.14
+              export PATH=/usr/local/bin:$PATH
+              bun build --compile --target=bun-linux-x64 --outfile=dist/washy-washy-cli-linux-amd64 src/cli.ts
+              scdoc < man/washy-washy-cli.1.scd > dist/washy-washy-cli.1
+              gzip -f dist/washy-washy-cli.1
+              curl -fsSL -o /tmp/nfpm.deb https://github.com/goreleaser/nfpm/releases/download/v2.44.1/nfpm_2.44.1_amd64.deb
+              apt-get install -y -qq /tmp/nfpm.deb
+              NFPM_ARCH=amd64 NFPM_GOARCH=amd64 NFPM_VERSION=0.0.0-ci \
+                envsubst \"\$NFPM_ARCH,\$NFPM_GOARCH,\$NFPM_VERSION\" < nfpm.yaml > /tmp/nfpm.yaml
+              nfpm package --config /tmp/nfpm.yaml --packager rpm --target dist/washy-washy-cli-ci.x86_64.rpm
+            '
+      - name: Install and run in Fedora
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work \
+            fedora:41@sha256:f1a3fab47bcb3c3ddf3135d5ee7ba8b7b25f2e809a47440936212a3a50957f3d \
+            bash -c '
+              set -euo pipefail
+              dnf install -y -q man-db util-linux >/dev/null
+              rpm -i dist/washy-washy-cli-ci.x86_64.rpm
+              washy-washy-cli data/washy-washy.json.dist --out /tmp/out
+              test -s /tmp/out/washy-washy-phone.pdf
+              test -s /tmp/out/washy-washy-print.pdf
+              man washy-washy-cli | grep -q "turn a laundry chart"
+            '
+
+  # Against a locally-built binary, not the published AUR git -- there is
+  # no real release to fetch on most pull requests, and PKGBUILD's
+  # source= entries fall back to a plain local file when given a bare
+  # filename with no URL scheme (confirmed: makepkg copies it straight
+  # from the PKGBUILD's own directory, no network involved).
+  aur-install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build and install with makepkg
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work \
+            archlinux:base@sha256:b860afd5823683f7ea389ba5f00d812f4fe55f6f286dea329d2abeefa535e309 \
+            bash -c '
+              set -euo pipefail
+              # The official archlinux image ships a pacman.conf with
+              # NoExtract = usr/share/man/* -- Dockers own size-saving
+              # default, not anything a real Arch install carries.
+              # Without removing it, this whole job silently "passes"
+              # while never actually installing the man page it is here
+              # to check for.
+              sed -i "/^NoExtract.*usr\/share\/man/d" /etc/pacman.conf
+              pacman -Sy --noconfirm base-devel curl unzip scdoc gawk man-db >/dev/null
+              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.3.14
+              export PATH=/usr/local/bin:$PATH
+              mkdir -p /tmp/ci-pkg && cd /tmp/ci-pkg
+              bun build --compile --target=bun-linux-x64 \
+                --outfile="washy-washy-cli-0.0.0-x86_64" /work/src/cli.ts
+              scdoc < /work/man/washy-washy-cli.1.scd | gzip > washy-washy-cli.1.gz
+              # A minimal PKGBUILD for this test, reusing only the real
+              # package() body below -- the real source= entries need an
+              # actual release to fetch, which does not exist on most pull
+              # requests. A bare local filename with no URL scheme stands
+              # in for one (confirmed: makepkg copies it straight from its
+              # own directory, no network involved). printf, not a
+              # heredoc: a heredoc terminator cannot carry the leading
+              # indentation this file (and YAML block scalars generally)
+              # would otherwise give it.
+              printf "%s\n" \
+                "pkgname=washy-washy-cli-bin" \
+                "pkgver=0.0.0" \
+                "pkgrel=1" \
+                "arch=(x86_64)" \
+                "url=\"https://github.com/alrayyes/washy-washy-cli\"" \
+                "license=(GPL-3.0-or-later)" \
+                "depends=(glibc)" \
+                "options=(!strip !debug)" \
+                "source=(\"washy-washy-cli-0.0.0-x86_64\" \"washy-washy-cli.1.gz\")" \
+                "sha256sums=(\"SKIP\" \"SKIP\")" \
+                > PKGBUILD
+              awk "/^package\(\)/,0" /work/PKGBUILD >> PKGBUILD
+              useradd -m builder && chown -R builder:builder /tmp/ci-pkg
+              su builder -c "cd /tmp/ci-pkg && makepkg --noconfirm"
+              pacman -U --noconfirm /tmp/ci-pkg/*.pkg.tar.zst
+              washy-washy-cli /work/data/washy-washy.json.dist --out /tmp/out
+              test -s /tmp/out/washy-washy-phone.pdf
+              test -s /tmp/out/washy-washy-print.pdf
+              man washy-washy-cli | grep -q "turn a laundry chart"
+            '
+
   # The PDFs themselves, kept as an artifact so a reviewer can read the thing
   # rather than a description of it.
   pdfs:
