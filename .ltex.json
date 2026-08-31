@@ -27,6 +27,7 @@
       "bookmarkable",
       "bunx",
       "commitlint",
+      "dnf",
       "filesystem",
       "gitignored",
       "jsDelivr",
@@ -45,6 +46,7 @@
       "typecheck",
       "typechecks",
       "washy",
+      "washy-washy-cli",
       "writable"
     ]
   },

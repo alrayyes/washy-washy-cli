@@ -37,14 +37,58 @@ publishes the container.
 
 ## Decisions
 
-### Binary: `bun build --compile`, one per target
+### Binary: `bun build --compile`, one per target, built in a pinned container
 
-`bun build --compile --target=<platform> src/cli.ts --outfile dist/washy-washy-cli-<platform>`
-for `linux-x64` and `linux-arm64`. Considered depending on an installed
-Bun instead (`depends=('bun')` on Arch) — rejected because Bun isn't
-packaged in Debian's repos, so the same dependency story can't work on all
-three targets; a compiled binary sidesteps the question everywhere at once
+`bun build --compile --target=bun-linux-x64` and `bun-linux-arm64` for
+`src/cli.ts`. Considered depending on an installed Bun instead
+(`depends=('bun')` on Arch) — rejected because Bun isn't packaged in
+Debian's repos, so the same dependency story can't work on all three
+targets; a compiled binary sidesteps the question everywhere at once
 instead of solving it three different ways.
+
+The compiled binary is **not** fully static — `file` shows it dynamically
+linked against the _building_ machine's glibc (`interpreter
+/lib64/ld-linux-x86-64.so.2`). glibc is forward-compatible but not
+backward-compatible, so a binary built on a newer glibc than a user's
+system ships refuses to run there. The `bun-linux-x64-musl` target
+doesn't solve this either — it links against musl's own interpreter
+(`/lib/ld-musl-x86_64.so.1`), confirmed to fail outright on a glibc-only
+host with neither musl nor that interpreter path present, so it trades
+one runtime assumption for a different, less commonly available one
+rather than removing the assumption.
+
+The fix is where the build runs, not the target: compile inside a pinned
+`debian:bookworm-slim` container — the same base the `Dockerfile` already
+uses — so the binary's minimum glibc matches the oldest package target
+rather than whatever `ubuntu-latest` happens to ship that week.
+
+**A second, more serious dependency problem, found the same way**: a
+binary compiled using this sandbox's system `bun` (Arch's own package,
+built against system ICU) came out `ldd`-linked against
+`libicui18n.so.78`, `libicuuc.so.78`, `libicudata.so.78`, `libstdc++.so.6`
+and `libgcc_s.so.1` on top of glibc — and installing the resulting `.deb`
+on plain `debian:bookworm-slim` failed outright: `error while loading
+shared libraries: libicui18n.so.78: cannot open shared object file`.
+ICU's soname changes across major versions with no compatibility promise,
+so a `Depends: libicu78` would be unsatisfiable on most real distros
+(bookworm ships `libicu72`), which would have made every installed
+package immediately broken.
+
+Root cause, confirmed directly: it's specific to how _this_ Bun got
+built, not inherent to `bun build --compile`. Oven's own official
+`bin/bun` (checked both the npm-distributed `@oven/bun-linux-x64`
+package and a fresh install via `bun.sh/install` inside
+`debian:bookworm-slim`) links against nothing but `libc`, `libpthread`,
+`libdl`, and `libm` — no ICU, no libstdc++. Compiling with that binary
+instead of the distro-packaged one, still inside the same
+`debian:bookworm-slim` container, produces a binary with that same clean
+dependency set, confirmed to run unmodified on a bare
+`debian:bookworm-slim` container with nothing else installed. **The
+container that builds the binary must install Bun via the official
+install script (or `oven-sh/setup-bun` in Actions, which does the same),
+never rely on a distro-repackaged `bun`** — the difference is invisible
+until the resulting binary is actually run somewhere minimal, which is
+exactly what task 6 exists to catch before a real release ever ships it.
 
 ### Man page: scdoc
 
@@ -85,7 +129,7 @@ things that follows from it automatically, same as the container image.
 
 ### CI verification: one job per distro, install and run for real
 
-Three new `check.yml` jobs (mirroring the existing `dockerfile` job's "the
+Three new `ci.yml` jobs (mirroring the existing `dockerfile` job's "the
 build compiling is worth less than the run proving it works"):
 
 - `deb-install`: `debian:bookworm-slim` container, `dpkg -i` the built
@@ -98,7 +142,7 @@ build compiling is worth less than the run proving it works"):
 
 These run on every `check` invocation (PRs and `main`), not only on
 release, so a packaging regression is caught before it ever reaches a
-release — consistent with `check.yml`'s existing role as the gate nothing
+release — consistent with `ci.yml`'s existing role as the gate nothing
 skips.
 
 ## Risks / Trade-offs

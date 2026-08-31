@@ -89,6 +89,10 @@ use the Helvetica that every PDF reader already has.
 
 ## Installation
 
+Arch (AUR), Debian/Ubuntu (`.deb`), and Fedora/RHEL (`.rpm`) all have a
+regular installable package — see [`INSTALL.md`](INSTALL.md). What
+follows here is running from source with Bun instead.
+
 ```sh
 bun install --frozen-lockfile
 cp data/washy-washy.json.dist data/washy-washy.json     # then describe your laundry

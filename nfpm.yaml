@@ -1,0 +1,39 @@
+# Wraps the already-compiled binary and man page from `bun run
+# build:binaries`/`build:man` -- no source compile happens here, unlike
+# the scaffold-deb-package/scaffold-rpm-package templates.
+#
+# nfpm expands variables in some top-level fields but not inside
+# `contents[].src` (confirmed: a custom one there reached nfpm literally,
+# unexpanded, and glob failed on it) -- so this file is run through
+# `envsubst '$NFPM_ARCH,$NFPM_GOARCH,$NFPM_VERSION'` in CI, once per arch,
+# before nfpm ever reads it. The explicit variable list matters: a bare
+# `envsubst` blanks out anything matching its syntax anywhere in the
+# file, comments included. NFPM_ARCH, NFPM_GOARCH and NFPM_VERSION are
+# ordinary shell env vars set by whichever CI job invokes it, not
+# anything nfpm-specific.
+name: washy-washy-cli
+arch: ${NFPM_ARCH}
+platform: linux
+version: ${NFPM_VERSION}
+section: utils
+priority: optional
+maintainer: Ryan Kes <ryan@andthensome.nl>
+description: |
+  Turns a JSON chart of laundry piles into a phone PDF and a printable
+  PDF, drawn for one specific washing machine and iron.
+homepage: https://github.com/alrayyes/washy-washy-cli
+license: GPL-3.0-or-later
+
+contents:
+  - src: dist/washy-washy-cli-linux-${NFPM_GOARCH}
+    dst: /usr/bin/washy-washy-cli
+    file_info:
+      mode: 0755
+  - src: dist/washy-washy-cli.1.gz
+    dst: /usr/share/man/man1/washy-washy-cli.1.gz
+    file_info:
+      mode: 0644
+  - src: LICENSE
+    dst: /usr/share/doc/washy-washy-cli/LICENSE
+    file_info:
+      mode: 0644

@@ -1,0 +1,150 @@
+# Publishes the OS packages when a release is cut, mirroring
+# publish-image.yml exactly: release.yml already only cuts a release
+# after `check` passed on main, so there is no separate manual gate here
+# -- "all lights green" already happened by the time this fires.
+#
+# The binary is built with Bun installed via the official script inside
+# a pinned debian:bookworm-slim, not this repo's system/distro-packaged
+# Bun and not directly on the Actions runner -- both matter, see
+# openspec/changes/add-os-packaging/design.md's Decisions section for
+# why (an older glibc baseline, and a distro-repackaged Bun links against
+# a specific ICU soname most real systems don't ship).
+name: publish packages
+
+on:
+  release:
+    types: [published]
+  # For re-running a failed publish against an existing tag, without
+  # cutting a new release to do it. The input is a git ref, so `v1.0.0`
+  # is what you want.
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: The tag to build and publish
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-packages-${{ github.event.release.tag_name || inputs.ref }}
+  cancel-in-progress: false
+
+env:
+  BUN_VERSION: 1.3.14
+  NFPM_VERSION: 2.44.1
+  VERSION: ${{ github.event.release.tag_name || inputs.ref }}
+
+jobs:
+  build-packages:
+    runs-on: ubuntu-latest
+    container: debian:bookworm-slim@sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.VERSION }}
+
+      - name: Install build tooling
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq curl unzip ca-certificates scdoc gettext-base gzip
+
+      - name: Install Bun (official installer, not a distro package)
+        run: curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- "bun-v${BUN_VERSION}"
+
+      - name: Install nfpm
+        run: |
+          curl -fsSL -o /tmp/nfpm.deb \
+            "https://github.com/goreleaser/nfpm/releases/download/v${NFPM_VERSION}/nfpm_${NFPM_VERSION}_amd64.deb"
+          apt-get install -y -qq /tmp/nfpm.deb
+
+      - run: bun install --frozen-lockfile --ignore-scripts
+
+      - name: Build binaries
+        run: bun run build:binaries
+
+      - name: Build man page
+        run: bun run build:man
+
+      # nfpm's ${VAR} expansion doesn't reach contents[].src (see
+      # nfpm.yaml's own comment and openspec/changes/add-os-packaging/
+      # tasks.md 4.1) -- the explicit variable list matters, a bare
+      # envsubst blanks any other ${...}-shaped text in the file.
+      - name: Build .deb and .rpm, one pair per arch
+        run: |
+          set -euo pipefail
+          version="${VERSION#v}"
+          for pair in "amd64:x64" "arm64:arm64"; do
+            nfpm_arch="${pair%%:*}"
+            goarch="${pair##*:}"
+            cp "dist/washy-washy-cli-linux-${goarch}" "dist/washy-washy-cli-linux-${nfpm_arch}"
+            NFPM_ARCH="$nfpm_arch" NFPM_GOARCH="$nfpm_arch" NFPM_VERSION="$version" \
+              envsubst '$NFPM_ARCH,$NFPM_GOARCH,$NFPM_VERSION' < nfpm.yaml > "/tmp/nfpm-${nfpm_arch}.yaml"
+            nfpm package --config "/tmp/nfpm-${nfpm_arch}.yaml" --packager deb \
+              --target "dist/washy-washy-cli_${version}_${nfpm_arch}.deb"
+            nfpm package --config "/tmp/nfpm-${nfpm_arch}.yaml" --packager rpm \
+              --target "dist/washy-washy-cli-${version}.$([ "$nfpm_arch" = amd64 ] && echo x86_64 || echo aarch64).rpm"
+          done
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+        with:
+          subject-path: |
+            dist/washy-washy-cli-linux-x64
+            dist/washy-washy-cli-linux-arm64
+            dist/*.deb
+            dist/*.rpm
+
+      - name: Upload release assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "$VERSION" \
+            dist/washy-washy-cli-linux-x64 \
+            dist/washy-washy-cli-linux-arm64 \
+            dist/washy-washy-cli.1.gz \
+            dist/*.deb \
+            dist/*.rpm \
+            --repo "${{ github.repository }}" \
+            --clobber
+
+  publish-aur:
+    needs: build-packages
+    runs-on: ubuntu-latest
+    container: archlinux:base@sha256:b860afd5823683f7ea389ba5f00d812f4fe55f6f286dea329d2abeefa535e309
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ env.VERSION }}
+
+      - name: Install tooling and a non-root builder
+        run: |
+          pacman -Sy --noconfirm base-devel pacman-contrib git openssh
+          useradd -m builder
+          chown -R builder:builder "$GITHUB_WORKSPACE"
+
+      # /home/builder explicitly, not ~ -- this step runs as root, but
+      # the Publish step below runs as builder via `su`, which uses
+      # builder's own $HOME. Writing to root's ~/.ssh here would leave
+      # builder with no key at all.
+      - name: Configure the AUR deploy key
+        run: |
+          install -d -m 700 -o builder -g builder /home/builder/.ssh
+          echo "$AUR_SSH_KEY" > /home/builder/.ssh/aur
+          ssh-keyscan aur.archlinux.org >> /home/builder/.ssh/known_hosts 2>/dev/null
+          {
+            echo "Host aur.archlinux.org"
+            echo "  IdentityFile ~/.ssh/aur"
+            echo "  User aur"
+          } >> /home/builder/.ssh/config
+          chmod 600 /home/builder/.ssh/aur
+          chown builder:builder /home/builder/.ssh/aur /home/builder/.ssh/known_hosts /home/builder/.ssh/config
+        env:
+          AUR_SSH_KEY: ${{ secrets.AUR_SSH_KEY }}
+
+      - name: Publish
+        run: su builder -c "VERSION=${VERSION#v} bash scripts/publish-aur.sh"
