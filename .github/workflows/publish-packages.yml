@@ -62,6 +62,8 @@ jobs:
             "https://github.com/goreleaser/nfpm/releases/download/v${NFPM_VERSION}/nfpm_${NFPM_VERSION}_amd64.deb"
           apt-get install -y -qq /tmp/nfpm.deb
 
+      - run: bun install --frozen-lockfile --ignore-scripts
+
       - name: Build binaries
         run: bun run build:binaries
 

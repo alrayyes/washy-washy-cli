@@ -184,6 +184,7 @@ jobs:
               apt-get install -y -qq curl unzip ca-certificates scdoc gettext-base
               curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.3.14
               export PATH=/usr/local/bin:$PATH
+              bun install --frozen-lockfile --ignore-scripts
               bun build --compile --target=bun-linux-x64 --outfile=dist/washy-washy-cli-linux-amd64 src/cli.ts
               scdoc < man/washy-washy-cli.1.scd > dist/washy-washy-cli.1
               gzip -f dist/washy-washy-cli.1
@@ -225,6 +226,7 @@ jobs:
               apt-get install -y -qq curl unzip ca-certificates scdoc gettext-base
               curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.3.14
               export PATH=/usr/local/bin:$PATH
+              bun install --frozen-lockfile --ignore-scripts
               bun build --compile --target=bun-linux-x64 --outfile=dist/washy-washy-cli-linux-amd64 src/cli.ts
               scdoc < man/washy-washy-cli.1.scd > dist/washy-washy-cli.1
               gzip -f dist/washy-washy-cli.1
@@ -273,6 +275,7 @@ jobs:
               pacman -Sy --noconfirm base-devel curl unzip scdoc gawk man-db >/dev/null
               curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.3.14
               export PATH=/usr/local/bin:$PATH
+              (cd /work && bun install --frozen-lockfile --ignore-scripts)
               mkdir -p /tmp/ci-pkg && cd /tmp/ci-pkg
               bun build --compile --target=bun-linux-x64 \
                 --outfile="washy-washy-cli-0.0.0-x86_64" /work/src/cli.ts
