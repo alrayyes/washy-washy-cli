@@ -26,11 +26,15 @@ These are repository secrets under Settings → Secrets and variables →
 Actions, not variables you export locally. Listed here so a workflow change
 doesn't leave someone guessing what they're for.
 
-| Variable        | Used by                         | Controls                                                                                                                                                                                                                 | Dummy value                            |
-| --------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------- |
-| `RELEASE_TOKEN` | `.github/workflows/release.yml` | Fine-grained PAT scoped to this repo with `contents: read and write`. Without it the release job reports it did nothing and stops — see [CONTRIBUTING.md → Releasing](CONTRIBUTING.md#releasing)                         | `github_pat_11AAAAAAA0aaaaaaaaaaaaaa`  |
-| `CODECOV_TOKEN` | `.github/workflows/ci.yml`      | Uploads coverage from the `check` job to Codecov                                                                                                                                                                         | `00000000-0000-0000-0000-000000000000` |
-| `LEFTHOOK=0`    | `.github/workflows/release.yml` | Set inline by the release job before it pushes the changelog commit, so that push doesn't fire `pre-push` in a job that never ran `prose:sync`. Not a secret, just a convention worth knowing if you touch that workflow | `0`                                    |
+| Variable        | Used by                         | Controls                                                                                                                                                         | Dummy value                            |
+| --------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `CODECOV_TOKEN` | `.github/workflows/ci.yml`      | Uploads coverage from the `check` job to Codecov                                                                                                                 | `00000000-0000-0000-0000-000000000000` |
+| `AUR_SSH_KEY`   | `.github/workflows/release.yml` | SSH deploy key for `aur@aur.archlinux.org`, dedicated to this purpose (a shared key also used by other repos, not a personal one) — see `scripts/publish-aur.sh` | an ed25519 private key, PEM-formatted  |
+
+No `RELEASE_TOKEN` any more: `release-please` cuts a release through the
+GitHub API once its own pull request merges, never a direct push to `main`,
+so the default `GITHUB_TOKEN` is enough — see
+[CONTRIBUTING.md → Releasing](CONTRIBUTING.md#releasing).
 
 No feature flags, no database, no auth and no third-party API keys — this
 tool draws PDFs from a JSON file on disk and talks to nothing over the

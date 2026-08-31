@@ -127,6 +127,16 @@ is the GitHub Release semantic-release already only cuts after a green
 green" is what already happens; this change makes packaging one of the
 things that follows from it automatically, same as the container image.
 
+**Superseded shortly after this change merged**: the repo moved off
+semantic-release onto `release-please` (a protected-branch push permission
+problem that had nothing to do with packaging), and a GitHub-token-created
+release fires no further workflow, so `release: published` never actually
+triggers under `release-please`. `build-packages`/`publish-aur` now live as
+two more jobs inside `release.yml` itself, gated on `release-please`'s own
+`release_created` output, rather than in a separate `publish-packages.yml`
+listening for that event. The rest of this section's reasoning — one
+trigger, no new manual gate — still holds; only the specific event changed.
+
 ### CI verification: one job per distro, install and run for real
 
 Three new `ci.yml` jobs (mirroring the existing `dockerfile` job's "the

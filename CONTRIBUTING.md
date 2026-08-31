@@ -233,17 +233,18 @@ Branch, commit under
 [Conventional Commits](https://www.conventionalcommits.org/), open a pull
 request. Run `bun run check` first.
 
-Those commit subjects are not decoration: semantic-release reads them when a
-pull request lands to decide the next version. `feat:` takes the minor, `fix:`
-the patch, a `BREAKING CHANGE:` footer the major, and a branch of nothing but
-`docs:` and `chore:` releases nothing at all.
+Those commit subjects are not decoration: release-please reads them to decide
+the next version. `feat:` takes the minor, `fix:` the patch, a
+`BREAKING CHANGE:` footer the major, and a branch of nothing but `docs:` and
+`chore:` releases nothing at all.
 
 **The pull request title matters as much as the commits.** Merges here are
 squashes, so the title is what lands on `main` and the branch commits become
 the body. Give it the same Conventional Commit subject you would give the
-commit, or semantic-release reads a subject with no type, finds nothing
-releasable and skips the version without failing. That is not hypothetical:
-it is how the split sheets reached `main` with no release behind them.
+commit, or release-please reads a subject with no type and finds nothing
+releasable in it. That is not hypothetical: it is how the split sheets once
+reached `main` with no release behind them, back when this repo used
+semantic-release.
 
 The `pr-title` job holds you to it, using
 [`amannn/action-semantic-pull-request`](https://github.com/amannn/action-semantic-pull-request)
@@ -268,7 +269,7 @@ And where it lands:
 - `topic/pdf` — rendering, layout and page fitting
 - `topic/chart` — the chart config and the mixing rules
 - `topic/appliances` — the machine file and what it validates
-- `topic/release` — CI, hooks, semantic-release and the image
+- `topic/release` — CI, hooks, release-please and the image
 - `topic/docs` — this file, the README and the prose linters
 - `topic/web` — the web app, out of scope for this repo except where core
   changes touch both
@@ -280,45 +281,24 @@ at a time is a filter nobody can use.
 
 ## Releasing
 
-Nobody picks a version. When a pull request lands on `main` and the checks pass,
-semantic-release reads the Conventional Commits that arrived with it, tags,
-writes `CHANGELOG.md` and publishes the notes.
+Nobody picks a version. `release-please` reads the Conventional Commits that
+land on `main` and keeps a release pull request open, updating
+`package.json`'s version, `.release-please-manifest.json` and `CHANGELOG.md`
+as more commits arrive. Merging that pull request — `release-auto-merge.yml`
+does this itself once it's green, the same standing exception every other
+release/dependency-bump pull request here gets — is what actually cuts the
+tag and GitHub release, via the API rather than a git push. That's the reason
+this needs no privileged bypass token the way the previous semantic-release
+setup did: nothing here ever pushes to protected `main` directly, so the
+default `GITHUB_TOKEN` is enough.
 
-It needs one secret, `RELEASE_TOKEN`: a fine-grained personal access token
-scoped to this repository with **contents: read and write**, saved under
-Settings → Secrets and variables → Actions. The job token that Actions hands out
-by default is not enough, and the reason is worth knowing. `main` requires status
-checks, a ruleset applies those to a direct push as well as to a pull request,
-and the changelog commit is a direct push from `github-actions[bot]` carrying no
-checks of its own — so it is rejected. A token belonging to someone the ruleset
-lets bypass is what gets it in.
+A tag or release the default token creates starts no further workflow run
+(GitHub refuses, to stop recursive runs), so the OS packaging build — the
+compiled binaries, the man page, the `.deb`/`.rpm`, the AUR push — lives as
+two more jobs in `release.yml` itself, gated on `release-please`'s own
+`release_created` output, rather than a separate workflow listening for
+`release: published`.
 
-Until that secret exists the release job reports that it did nothing and stops.
-It does not fail: nothing is broken, there is just no token, and a release badge
-stuck on red would be saying otherwise.
-
-One wrinkle worth knowing if you touch that workflow. semantic-release checks
-the runtime version at startup and refuses anything outside `^22.14 || >=24.10`,
-and Bun answers `process.version` with the Node version it implements — 24.3.0 —
-so `bunx --bun semantic-release` dies on the version gate before doing anything
-at all. Bun installs it and Node runs it.
-
-A second wrinkle, from the same family of things that fail quietly. The notes
-are written by the `conventionalcommits` preset, which arrives as its own pinned
-package, and version 10 of it changed the shape of the config object it exports.
-`@semantic-release/release-notes-generator` 14 still reads the old shape, so it
-finds no template, writes a version heading with nothing under it, and reports
-success. That is what shipped as v1.0.0 and v1.1.0. The preset is held at 9.x,
-Dependabot is told not to carry it past that, and `test/release-notes.test.ts`
-checks that generated notes have sections in them — a version range would not
-have caught this, and neither did a green pipeline.
-
-`CHANGELOG.md` is written by that job, and Prettier, markdownlint and Vale are
-all told to leave it alone. Its bullets are the generator's; reformatting them by
-hand only lasts until the next release.
-
-That job pushes with `LEFTHOOK=0`. The hooks install themselves on `bun install`,
-so they land there too, and its push fired a `pre-push` that went looking for a
-Vale it had never downloaded — failing the release over the tooling rather than
-the prose. Whatever that hook would have checked already ran on that exact
-commit, and it is the green run that starts the release in the first place.
+`CHANGELOG.md` is written by `release-please`, and Prettier, markdownlint and
+Vale are all told to leave it alone. Its bullets are the tool's; reformatting
+them by hand only lasts until the next release.
