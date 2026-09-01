@@ -57,6 +57,9 @@ interface Args {
   out: string;
 }
 
+/** Distinct from a real usage error, so the entry point can exit 0 rather than 1. */
+export class HelpRequested extends Error {}
+
 export function parseArgs(argv: string[]): Args {
   let config = DEFAULT_CONFIG;
   let out = DEFAULT_OUT;
@@ -70,7 +73,7 @@ export function parseArgs(argv: string[]): Args {
       out = value;
       index += 1;
     } else if (argument === "--help" || argument === "-h") {
-      throw new Error(usage());
+      throw new HelpRequested(usage());
     } else {
       positional.push(argument);
     }
@@ -156,6 +159,10 @@ export async function main(argv: string[]): Promise<void> {
 
 if (import.meta.main) {
   main(Bun.argv.slice(2)).catch((error: unknown) => {
+    if (error instanceof HelpRequested) {
+      console.log(error.message);
+      process.exit(0);
+    }
     console.error(error instanceof Error ? error.message : String(error));
     process.exit(1);
   });
