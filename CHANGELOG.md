@@ -4,6 +4,13 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.1.3](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.2...v3.1.3) (2026-09-01)
+
+
+### Bug Fixes
+
+* **flake:** bump to v3.1.2 and its real asset hashes ([#177](https://github.com/alrayyes/washy-washy-cli/issues/177)) ([df3547b](https://github.com/alrayyes/washy-washy-cli/commit/df3547b1911b4057c0d4cb917201fa9514ccf7d4))
+
 ## [3.1.2](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.1...v3.1.2) (2026-09-01)
 
 
