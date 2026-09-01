@@ -4,6 +4,15 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.1.2](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.1...v3.1.2) (2026-09-01)
+
+
+### Bug Fixes
+
+* **cli:** --help exits 0, not 1 ([#175](https://github.com/alrayyes/washy-washy-cli/issues/175)) ([93392f7](https://github.com/alrayyes/washy-washy-cli/commit/93392f7ff7def4f7e7d2414b28575f834dbe25cc))
+* **flake:** bump to v3.1.1 and its real asset hashes ([#174](https://github.com/alrayyes/washy-washy-cli/issues/174)) ([1bf598d](https://github.com/alrayyes/washy-washy-cli/commit/1bf598d0ef4a553a18489e002951e742b0edc9b8))
+* **release:** use RELEASE_TOKEN for release-please-action ([#173](https://github.com/alrayyes/washy-washy-cli/issues/173)) ([57ca86a](https://github.com/alrayyes/washy-washy-cli/commit/57ca86a376101e12bf516a203a637b273a784823))
+
 ## [3.1.1](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.0...v3.1.1) (2026-09-01)
 
 
