@@ -4,6 +4,15 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.1.1](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.0...v3.1.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* **aur:** point x86_64 source at the real washy-washy-cli-linux-x64 asset ([#171](https://github.com/alrayyes/washy-washy-cli/issues/171)) ([7db262e](https://github.com/alrayyes/washy-washy-cli/commit/7db262e90352304fb736ec4dbbfbca91d6d6bede))
+* **deps:** bump @washy-washy/pdf from 2.3.5 to 2.3.7 ([#166](https://github.com/alrayyes/washy-washy-cli/issues/166)) ([51fd5a5](https://github.com/alrayyes/washy-washy-cli/commit/51fd5a51ff9f8b1d3e406d4390b801003f61303a))
+* **docs:** regenerate stale example PDFs and screenshots ([#172](https://github.com/alrayyes/washy-washy-cli/issues/172)) ([84079c9](https://github.com/alrayyes/washy-washy-cli/commit/84079c9a94a093d1c8166d30988442f67b6f436e))
+
 ## [3.1.0](https://github.com/alrayyes/washy-washy-cli/compare/v3.0.0...v3.1.0) (2026-09-01)
 
 
