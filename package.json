@@ -30,7 +30,7 @@
   },
   "dependencies": {
     "@washy-washy/core": "1.4.1",
-    "@washy-washy/pdf": "2.3.5",
+    "@washy-washy/pdf": "2.3.7",
     "pdf-lib": "1.17.1"
   },
   "devDependencies": {
