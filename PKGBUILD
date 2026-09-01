@@ -37,7 +37,7 @@ depends=('glibc')
 # oversight.
 options=(!strip !debug)
 source_x86_64=(
-  "washy-washy-cli-$pkgver-$CARCH::https://github.com/alrayyes/washy-washy-cli/releases/download/v$pkgver/washy-washy-cli-linux-amd64"
+  "washy-washy-cli-$pkgver-$CARCH::https://github.com/alrayyes/washy-washy-cli/releases/download/v$pkgver/washy-washy-cli-linux-x64"
   "washy-washy-cli.1.gz::https://github.com/alrayyes/washy-washy-cli/releases/download/v$pkgver/washy-washy-cli.1.gz"
 )
 source_aarch64=(
