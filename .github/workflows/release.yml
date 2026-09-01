@@ -40,8 +40,16 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
+      # The default GITHUB_TOKEN can't be this action's token: GitHub
+      # refuses to let a GITHUB_TOKEN-authored push or PR trigger further
+      # workflow runs (anti-recursion guard), so the release PR this opens
+      # would never get a `check` run and could never go green -- exactly
+      # what happened before RELEASE_TOKEN existed. A PAT/App token sidesteps
+      # that guard entirely.
       - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         id: release
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }}
 
   # Bun installed via the official script inside a pinned
   # debian:bookworm-slim, not this repo's system/distro-packaged Bun and
