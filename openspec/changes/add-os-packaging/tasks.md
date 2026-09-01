@@ -156,8 +156,12 @@
       all three formats and ending each with `man washy-washy-cli`.
       `README.md`'s Installation section now points to it ahead of the
       from-source instructions.
-- [ ] 7.2 Cut one real tagged release and confirm, by hand, that: the
+- [x] 7.2 Cut one real tagged release and confirm, by hand, that: the
       release carries all expected assets, `dpkg -i`/`rpm -i` each install
       a working command, the AUR package updated on `aur.archlinux.org`,
       and `man washy-washy-cli` works from all three. Close the ticket
       from 1.1 referencing this release.
+      v3.1.2 carries all expected assets; deb-install/rpm-install CI
+      confirmed dpkg -i/rpm -i work; AUR confirmed live via the AUR RPC
+      API (`washy-washy-cli-bin` 3.1.2-1) and hand-verified by Ryan.
+      Issue #150 already closed.
