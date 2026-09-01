@@ -1,7 +1,7 @@
 # Installing washy-washy-cli
 
-Three ways to get `washy-washy-cli` as a regular command, no Bun or Docker
-required. All three come from the same standalone binary, built once per
+Four ways to get `washy-washy-cli` as a regular command, no Bun or Docker
+required. All four come from the same standalone binary, built once per
 release and published as GitHub Release assets — see
 `openspec/changes/add-os-packaging/design.md` for how.
 
@@ -15,6 +15,17 @@ makepkg -si
 
 Or with an AUR helper: `paru -S washy-washy-cli-bin` /
 `yay -S washy-washy-cli-bin`.
+
+## Nix / NixOS (flakes)
+
+```sh
+nix run github:alrayyes/washy-washy-cli
+```
+
+Or `nix profile install github:alrayyes/washy-washy-cli` to keep it. No
+hosted binary cache — a first run/install fetches the same release binary
+the AUR package installs (see `flake.nix`), not something Nix builds from
+source.
 
 ## Debian / Ubuntu (.deb)
 

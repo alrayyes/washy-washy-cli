@@ -327,3 +327,21 @@ jobs:
           name: washy-washy-pdfs
           path: out/
           retention-days: 30
+
+  # Unlike movie-planner/hush-hush/linkwarden-obsidian-sync's own nix-flake
+  # jobs, this one fetches a real GitHub Release asset rather than building
+  # from source (see flake.nix's own comment for why: a `bun build
+  # --compile` binary built with nixpkgs' own Bun links against the wrong
+  # libicu/libstdc++). That means this job can only go green once a real
+  # release has actually published washy-washy-cli-linux-x64/.1.gz assets
+  # -- blocked until #159 merges and that release gets re-dispatched.
+  nix-flake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: cachix/install-nix-action@13d8dd58da0234aa297dedd986986ccb8e7f3e24 # v31.11.1
+        with:
+          extra_nix_config: experimental-features = nix-command flakes
+      - run: nix flake check
+      - run: nix build .#default
+      - run: ./result/bin/washy-washy-cli --help

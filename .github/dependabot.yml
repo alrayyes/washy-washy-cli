@@ -59,3 +59,15 @@ updates:
     commit-message:
       prefix: fix
       include: scope
+
+  - package-ecosystem: nix
+    directory: /
+    schedule:
+      interval: weekly
+    # flake.nix wraps a prebuilt release binary rather than building one --
+    # nixpkgs/flake-utils only supply the fetch-and-install tooling, not
+    # anything that ends up in what ships, so a bump here is dev tooling
+    # like bun's own devDependencies above, not a release-worthy fix.
+    commit-message:
+      prefix: chore
+      include: scope
