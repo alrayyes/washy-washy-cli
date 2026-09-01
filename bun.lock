@@ -6,7 +6,7 @@
       "name": "washy-washy",
       "dependencies": {
         "@washy-washy/core": "1.4.1",
-        "@washy-washy/pdf": "2.3.5",
+        "@washy-washy/pdf": "2.3.7",
         "pdf-lib": "1.17.1",
       },
       "devDependencies": {
@@ -190,7 +190,7 @@
 
     "@washy-washy/core": ["@washy-washy/core@1.4.1", "", { "dependencies": { "csv-parse": "7.0.2" } }, "sha512-8NXdpwnFA8zUFLH1HefBYcsnM6ftsZMyTarSF9M6efVYjjL8dweCMakQGndyDTevIQZ7RZMsCxpxMzZoJ/hMyw=="],
 
-    "@washy-washy/pdf": ["@washy-washy/pdf@2.3.5", "", { "dependencies": { "@react-pdf/renderer": "4.6.1", "@washy-washy/core": "1.3.1", "pdf-lib": "1.17.1", "react": "19.2.8" } }, "sha512-5gWiwryxQXhJUAa3nLL/4irftpJxGYr9uBZlea1U77bNVIIk1LQgQ7CGMbojF5vwverewHv71ehergsjfFbnVg=="],
+    "@washy-washy/pdf": ["@washy-washy/pdf@2.3.7", "", { "dependencies": { "@react-pdf/renderer": "4.6.1", "@washy-washy/core": "1.4.0", "pdf-lib": "1.17.1", "react": "19.2.8" } }, "sha512-cMtqhdDFtVpFgberDV3sKYUm23ylmSU0EjFfdn/jRbO7kHF4jBfnfiRN4ysuiRu/W8jDsjD33SSuvAXxYc/Dpg=="],
 
     "abs-svg-path": ["abs-svg-path@0.1.1", "", {}, "sha512-d8XPSGjfyzlXC3Xx891DJRyZfqk5JU0BJrDQcsWomFIV1/BIzPW5HDH5iDdWpqWaav0YVIEzT1RHTwWr0FFshA=="],
 
@@ -564,7 +564,7 @@
 
     "@swc/helpers/tslib": ["tslib@2.8.1", "", {}, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
 
-    "@washy-washy/pdf/@washy-washy/core": ["@washy-washy/core@1.3.1", "", { "dependencies": { "csv-parse": "7.0.2" } }, "sha512-6DKr2UvQSv4z09+K1p062+uS07LMAVZnrhzS3C+x3EOBoHoeD4TH3Nc2DwHwFBYU0kGVfWjhGCnm196X+ODbeg=="],
+    "@washy-washy/pdf/@washy-washy/core": ["@washy-washy/core@1.4.0", "", { "dependencies": { "csv-parse": "7.0.2" } }, "sha512-aCSyvOR2Mt6R4yUgopIaS0yNFmeP5Ow0uOjNTQRo2k26SbyO6wPF5/c59eac+ehJqecfcBP6TeFi+bqjgSIbsQ=="],
 
     "brotli/base64-js": ["base64-js@1.5.1", "", {}, "sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA=="],
 
