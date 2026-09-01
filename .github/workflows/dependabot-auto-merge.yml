@@ -22,6 +22,11 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      # A github-actions-ecosystem bump touches .github/workflows/ by
+      # definition. Without this, enabling auto-merge on it fails outright:
+      # "Pull request refusing to allow a GitHub App to create or update
+      # workflow ... without `workflows` permission".
+      workflows: write
     steps:
       # Squashed with a subject commitlint accepts. Dependabot writes "Bump x
       # from a to b" and config-conventional refuses the capital B, so the
