@@ -19,7 +19,7 @@
 
         # Kept in sync with .release-please-manifest.json by hand --
         # release-please owns that file, not this one.
-        version = "3.0.0";
+        version = "3.1.1";
 
         # A prebuilt binary, wrapped rather than built from source --
         # unlike this account's Go/Python flakes (movie-planner,
@@ -41,11 +41,11 @@
         archInfo = {
           x86_64-linux = {
             bunArch = "x64";
-            hash = "sha256-DyWa7l3hiUEezQUm61nC1x7yEDJOYIZJYfxVCTjPTHI=";
+            hash = "sha256-pjK8Co2tMZAA2T3FNOfunKPNkulw9lMbCOLQikapTZM=";
           };
           aarch64-linux = {
             bunArch = "arm64";
-            hash = "sha256-lxc6WahQarl2HkBZtcoLL74FnWjY+RofoQXtPkCIHQg=";
+            hash = "sha256-T7dajnyMJC94EhNXUhFdKQ8Pg9Xohcof0oIkit8k3vQ=";
           };
         }.${system};
 
@@ -62,7 +62,7 @@
         manPage = pkgs.fetchurl {
           name = "washy-washy-cli.1.gz";
           url = "https://github.com/alrayyes/washy-washy-cli/releases/download/v${version}/washy-washy-cli.1.gz";
-          hash = "sha256-vy/fy0hjExGwnsBr4mPbpl+r7AgPYNqHZfIO5ug8y8A=";
+          hash = "sha256-xZNK4eMyEr/9iu7lS6vhwug8o0LehcO1CC1+kQTg4Gg=";
         };
       in
       {
