@@ -103,6 +103,17 @@ jobs:
       # shell: bash, not this container's default sh (dash) -- dash has
       # no -o pipefail, confirmed: "set: Illegal option -o pipefail"
       # broke the first real release before this was caught.
+      #
+      # NFPM_GOARCH is the bun build --compile target name (x64/arm64),
+      # matching nfpm.yaml's `contents[].src:
+      # dist/washy-washy-cli-linux-${NFPM_GOARCH}` -- distinct from
+      # NFPM_ARCH, the nfpm/Debian arch name (amd64/arm64). An earlier
+      # version wired both to the nfpm name and papered over the
+      # mismatch with a `cp` aliasing the real build output to an
+      # nfpm-named copy; for the arm64 pair the two names are identical,
+      # so that cp's source and destination collided and failed the job
+      # under `set -e` (confirmed: every release's build-packages job
+      # had been failing there, see #158).
       - name: Build .deb and .rpm, one pair per arch
         shell: bash
         run: |
@@ -111,8 +122,7 @@ jobs:
           for pair in "amd64:x64" "arm64:arm64"; do
             nfpm_arch="${pair%%:*}"
             goarch="${pair##*:}"
-            cp "dist/washy-washy-cli-linux-${goarch}" "dist/washy-washy-cli-linux-${nfpm_arch}"
-            NFPM_ARCH="$nfpm_arch" NFPM_GOARCH="$nfpm_arch" NFPM_VERSION="$version" \
+            NFPM_ARCH="$nfpm_arch" NFPM_GOARCH="$goarch" NFPM_VERSION="$version" \
               envsubst '$NFPM_ARCH,$NFPM_GOARCH,$NFPM_VERSION' < nfpm.yaml > "/tmp/nfpm-${nfpm_arch}.yaml"
             nfpm package --config "/tmp/nfpm-${nfpm_arch}.yaml" --packager deb \
               --target "dist/washy-washy-cli_${version}_${nfpm_arch}.deb"
