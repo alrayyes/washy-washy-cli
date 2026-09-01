@@ -4,6 +4,20 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.1.0](https://github.com/alrayyes/washy-washy-cli/compare/v3.0.0...v3.1.0) (2026-09-01)
+
+
+### Features
+
+* package washy-washy-cli for Nix/NixOS via a flake.nix ([#161](https://github.com/alrayyes/washy-washy-cli/issues/161)) ([c86c1fb](https://github.com/alrayyes/washy-washy-cli/commit/c86c1fb3aebd64ca2b4db0d356b2e3f971284b59)), closes [#160](https://github.com/alrayyes/washy-washy-cli/issues/160)
+
+
+### Bug Fixes
+
+* **release:** install gh in the packaging container ([#163](https://github.com/alrayyes/washy-washy-cli/issues/163)) ([0fa286e](https://github.com/alrayyes/washy-washy-cli/commit/0fa286e6f82738321be431f1432c8022dd93840f)), closes [#162](https://github.com/alrayyes/washy-washy-cli/issues/162)
+* **release:** use bash for the packaging step, add a re-run trigger ([#156](https://github.com/alrayyes/washy-washy-cli/issues/156)) ([e1a17bf](https://github.com/alrayyes/washy-washy-cli/commit/e1a17bf9e65370c8d820d337e97eeab634184882))
+* **release:** wire NFPM_GOARCH to the bun target name, not the nfpm arch ([#159](https://github.com/alrayyes/washy-washy-cli/issues/159)) ([b3eb860](https://github.com/alrayyes/washy-washy-cli/commit/b3eb860dc557e78a36a9fb071adc47f262876eb1)), closes [#158](https://github.com/alrayyes/washy-washy-cli/issues/158)
+
 ## [3.0.0](https://github.com/alrayyes/washy-washy-cli/compare/v2.16.0...v3.0.0) (2026-08-31)
 
 
