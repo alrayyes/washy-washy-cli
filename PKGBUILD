@@ -36,13 +36,19 @@ depends=('glibc')
 # LDFLAGS this PKGBUILD controls, and unstripped is the point, not an
 # oversight.
 options=(!strip !debug)
+# The man page's local name carries $pkgver too, same as the binary's --
+# without it, makepkg's source cache (paru: ~/.cache/paru/clone/<pkg>) keeps
+# reusing a prior version's already-downloaded washy-washy-cli.1.gz on a
+# version bump instead of fetching the new one, since the filename never
+# changed -- the stale file then fails checksum against the new PKGBUILD's
+# sha256sums entry. Confirmed live: see #183.
 source_x86_64=(
   "washy-washy-cli-$pkgver-$CARCH::https://github.com/alrayyes/washy-washy-cli/releases/download/v$pkgver/washy-washy-cli-linux-x64"
-  "washy-washy-cli.1.gz::https://github.com/alrayyes/washy-washy-cli/releases/download/v$pkgver/washy-washy-cli.1.gz"
+  "washy-washy-cli-$pkgver.1.gz::https://github.com/alrayyes/washy-washy-cli/releases/download/v$pkgver/washy-washy-cli.1.gz"
 )
 source_aarch64=(
   "washy-washy-cli-$pkgver-$CARCH::https://github.com/alrayyes/washy-washy-cli/releases/download/v$pkgver/washy-washy-cli-linux-arm64"
-  "washy-washy-cli.1.gz::https://github.com/alrayyes/washy-washy-cli/releases/download/v$pkgver/washy-washy-cli.1.gz"
+  "washy-washy-cli-$pkgver.1.gz::https://github.com/alrayyes/washy-washy-cli/releases/download/v$pkgver/washy-washy-cli.1.gz"
 )
 # Real checksums are filled in by the AUR-publish job (`updpkgsums`)
 # against that release's actual assets -- these are placeholders until
@@ -56,5 +62,5 @@ sha256sums_aarch64=('SKIP' 'SKIP')
 # for that case.
 package() {
   install -Dm755 "washy-washy-cli-$pkgver-$CARCH" "$pkgdir/usr/bin/washy-washy-cli"
-  install -Dm644 "washy-washy-cli.1.gz" "$pkgdir/usr/share/man/man1/washy-washy-cli.1.gz"
+  install -Dm644 "washy-washy-cli-$pkgver.1.gz" "$pkgdir/usr/share/man/man1/washy-washy-cli.1.gz"
 }
