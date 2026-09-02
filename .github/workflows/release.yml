@@ -188,6 +188,37 @@ jobs:
         with:
           ref: ${{ env.TAG_NAME }}
 
+      # This container is fresh every run, so `updpkgsums` below always
+      # downloads clean and never reproduces the real failure mode: a local
+      # source name that doesn't vary with $pkgver gets reused from a prior
+      # version's SRCDEST cache on a real machine instead of redownloaded,
+      # and then fails checksum against this run's sha256sums (#183). Catch
+      # the naming mistake statically instead, since this job can't
+      # reproduce the live symptom.
+      - name: Regression check -- source names carry $pkgver
+        shell: bash
+        run: |
+          set -euo pipefail
+          fail=0
+          for arr in source_x86_64 source_aarch64; do
+            block=$(sed -n "/^${arr}=(/,/^)/p" PKGBUILD)
+            while IFS= read -r line; do
+              case "$line" in
+                *'::'*)
+                  name=$(sed -e 's/^[[:space:]]*"//' -e 's/::.*//' <<< "$line")
+                  case "$name" in
+                    *'$pkgver'*) ;;
+                    *)
+                      echo "::error::$arr source has no \$pkgver in its local filename, so a version bump can silently reuse a stale cached file (see #183): $line" >&2
+                      fail=1
+                      ;;
+                  esac
+                  ;;
+              esac
+            done <<< "$block"
+          done
+          exit "$fail"
+
       - name: Install tooling and a non-root builder
         run: |
           pacman -Sy --noconfirm base-devel pacman-contrib git openssh
