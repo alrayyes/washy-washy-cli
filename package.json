@@ -1,6 +1,6 @@
 {
   "name": "washy-washy",
-  "version": "3.1.4",
+  "version": "3.1.5",
   "private": true,
   "description": "Turns a JSON chart of laundry piles into a phone PDF and a printable PDF, drawn for one specific washing machine and iron.",
   "license": "GPL-3.0-or-later",
