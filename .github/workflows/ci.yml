@@ -316,6 +316,77 @@ jobs:
               man washy-washy-cli | grep -q "turn a laundry chart"
             '
 
+  # #183: a stale man page survived a version bump because its local
+  # source filename didn't carry $pkgver, so makepkg reused whatever a
+  # prior version's build had already downloaded into the same directory
+  # instead of fetching the new one. aur-install (above) only ever builds
+  # one pkgver per run, so it can't exercise that reuse path at all --
+  # this job builds the repo's real source_x86_64 array and package()
+  # (only the GitHub host is swapped for a local one) against two fake
+  # releases served from a local HTTP server, back to back in the same
+  # directory, and checks the second build actually installs the second
+  # release's man page rather than the first's.
+  aur-version-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build v1, then v2 in the same directory, and check for stale reuse
+        run: |
+          docker run --rm -v "$PWD:/work" -w /work \
+            archlinux:base@sha256:b860afd5823683f7ea389ba5f00d812f4fe55f6f286dea329d2abeefa535e309 \
+            bash -c '
+              set -euo pipefail
+              sed -i "/^NoExtract.*usr\/share\/man/d" /etc/pacman.conf
+              pacman -Sy --noconfirm base-devel curl unzip scdoc gawk python >/dev/null
+              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.3.14
+              export PATH=/usr/local/bin:$PATH
+              (cd /work && bun install --frozen-lockfile --ignore-scripts)
+
+              mkdir -p /srv/assets/v1.0.0 /srv/assets/v1.1.0
+              bun build --compile --target=bun-linux-x64 \
+                --outfile=/srv/assets/v1.0.0/washy-washy-cli-linux-x64 /work/src/cli.ts
+              cp /srv/assets/v1.0.0/washy-washy-cli-linux-x64 /srv/assets/v1.1.0/washy-washy-cli-linux-x64
+              # Same real man page, one distinguishing line appended per
+              # fake release -- enough to tell which one actually landed
+              # without needing the two releases to differ for real.
+              scdoc < /work/man/washy-washy-cli.1.scd > /tmp/man.scd.out
+              { cat /tmp/man.scd.out; printf "\n.\\\" fake-release-v1\n"; } | gzip > /srv/assets/v1.0.0/washy-washy-cli.1.gz
+              { cat /tmp/man.scd.out; printf "\n.\\\" fake-release-v2\n"; } | gzip > /srv/assets/v1.1.0/washy-washy-cli.1.gz
+              (cd /srv/assets && python -m http.server 8899 --bind 127.0.0.1 &>/tmp/httpd.log &)
+              sleep 1
+
+              # The real source_x86_64 and package() -- unmodified except
+              # for pointing at the local server instead of GitHub -- so a
+              # future PKGBUILD edit is what this job re-checks, not a
+              # hand-copied stand-in that could silently drift from it.
+              mkdir -p /tmp/ci-bump && cd /tmp/ci-bump
+              {
+                echo "pkgname=washy-washy-cli-bin"
+                echo "pkgver=0.0.0"
+                echo "pkgrel=1"
+                echo "arch=(x86_64)"
+                echo "options=(!strip !debug)"
+                sed -n "/^source_x86_64=(/,/^)/p" /work/PKGBUILD \
+                  | sed "s#https://github.com/alrayyes/washy-washy-cli/releases/download#http://127.0.0.1:8899#"
+                echo "sha256sums_x86_64=(\"SKIP\" \"SKIP\")"
+                awk "/^package\(\)/,0" /work/PKGBUILD
+              } > PKGBUILD
+              useradd -m builder && chown -R builder:builder /tmp/ci-bump
+
+              for ver in 1.0.0 1.1.0; do
+                sed -i "s/^pkgver=.*/pkgver=$ver/" PKGBUILD
+                chown builder:builder PKGBUILD
+                rm -f *.pkg.tar.zst
+                su builder -c "makepkg --noconfirm -f"
+                pacman -U --noconfirm ./*.pkg.tar.zst
+              done
+
+              zcat /usr/share/man/man1/washy-washy-cli.1.gz | grep -q "fake-release-v2" || {
+                echo "::error::the second build installed a stale man page from the first version instead of its own -- see #183" >&2
+                exit 1
+              }
+            '
+
   # The PDFs themselves, kept as an artifact so a reviewer can read the thing
   # rather than a description of it.
   pdfs:
