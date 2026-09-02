@@ -25,11 +25,59 @@ cp "$REPO_ROOT/PKGBUILD" "$SCRATCH/aur/PKGBUILD"
 
 cd "$SCRATCH/aur"
 
-echo "==> Recomputing checksums against the real release assets"
-# updpkgsums needs makepkg's own tooling (base-devel) present -- the CI
-# job installing this script runs it inside an archlinux container for
-# exactly that reason.
-updpkgsums PKGBUILD
+echo "==> Recomputing checksums against the real release assets, per architecture"
+# Deliberately not `updpkgsums PKGBUILD`: it resolves $CARCH from the
+# machine actually running it (/etc/makepkg.conf hardcodes CARCH to the
+# real arch, no env override reaches it), so on this job's single-arch
+# runner it can only ever correctly checksum ITS OWN architecture --
+# every other declared arch silently gets that same wrong checksum
+# copied in instead of its real one. Confirmed live: sha256sums_aarch64
+# was a byte-for-byte duplicate of the x86_64 binary's checksum, not the
+# real arm64 asset's, for as long as this package has been published.
+# See rules/packaging.md. Fetching and hashing each arch's own real
+# source here instead, then writing the result straight into PKGBUILD.
+# CARCH itself has to be set before this first source too -- PKGBUILD
+# references it unconditionally (in the source= local filenames) and
+# set -u trips over it otherwise. The actual value doesn't matter here;
+# only $arch (the declared architecture list) is read at this point.
+CARCH="${CARCH:-x86_64}" source PKGBUILD
+for target_arch in "${arch[@]}"; do
+  # A fresh subshell per arch, with CARCH pinned to *that* arch before
+  # sourcing PKGBUILD again -- the only way to get source_<arch>'s own
+  # local filenames and URLs to resolve correctly for an arch that isn't
+  # this runner's real one.
+  sums=()
+  while IFS= read -r url; do
+    sums+=("$(curl -fsSL "$url" | sha256sum | cut -d' ' -f1)")
+  done < <(
+    CARCH="$target_arch"
+    source PKGBUILD
+    declare -n sources="source_${target_arch}"
+    for entry in "${sources[@]}"; do
+      echo "${entry#*::}"
+    done
+  )
+  python3 - "$target_arch" "${sums[@]}" <<'PYEOF'
+import re
+import sys
+
+target_arch, *sums = sys.argv[1:]
+with open("PKGBUILD") as f:
+    content = f.read()
+
+indent = "\n" + " " * 20
+quoted = indent.join(f"'{s}'" for s in sums)
+content, n = re.subn(
+    rf"sha256sums_{target_arch}=\([^)]*\)",
+    f"sha256sums_{target_arch}=({quoted})",
+    content,
+)
+assert n == 1, f"expected exactly one sha256sums_{target_arch}=(...) block, found {n}"
+
+with open("PKGBUILD", "w") as f:
+    f.write(content)
+PYEOF
+done
 
 echo "==> Regenerating .SRCINFO"
 makepkg --printsrcinfo > .SRCINFO
