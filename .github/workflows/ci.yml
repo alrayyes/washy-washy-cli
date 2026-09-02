@@ -284,7 +284,7 @@ jobs:
               mkdir -p /tmp/ci-pkg && cd /tmp/ci-pkg
               bun build --compile --target=bun-linux-x64 \
                 --outfile="washy-washy-cli-0.0.0-x86_64" /work/src/cli.ts
-              scdoc < /work/man/washy-washy-cli.1.scd | gzip > washy-washy-cli.1.gz
+              scdoc < /work/man/washy-washy-cli.1.scd | gzip > washy-washy-cli-0.0.0.1.gz
               # A minimal PKGBUILD for this test, reusing only the real
               # package() body below -- the real source= entries need an
               # actual release to fetch, which does not exist on most pull
@@ -303,7 +303,7 @@ jobs:
                 "license=(GPL-3.0-or-later)" \
                 "depends=(glibc)" \
                 "options=(!strip !debug)" \
-                "source=(\"washy-washy-cli-0.0.0-x86_64\" \"washy-washy-cli.1.gz\")" \
+                "source=(\"washy-washy-cli-0.0.0-x86_64\" \"washy-washy-cli-0.0.0.1.gz\")" \
                 "sha256sums=(\"SKIP\" \"SKIP\")" \
                 > PKGBUILD
               awk "/^package\(\)/,0" /work/PKGBUILD >> PKGBUILD
