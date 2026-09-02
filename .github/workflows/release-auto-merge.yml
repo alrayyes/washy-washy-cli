@@ -6,6 +6,15 @@
 # pull_request, not pull_request_target: release-please's pull request
 # comes from a branch on this repo, never a fork, so there's no untrusted
 # checkout to guard against.
+#
+# GH_TOKEN below has to be RELEASE_TOKEN, not GITHUB_TOKEN: the merge
+# commit this produces on main is itself GITHUB_TOKEN-authored if it
+# isn't, and GitHub's anti-recursion guard -- the same one release.yml's
+# own header comment already covers for the tag it cuts -- then silently
+# stops that merge from triggering release.yml (or any other workflow)
+# at all. Confirmed live: PR #186's auto-merge with the old GITHUB_TOKEN
+# produced zero workflow runs for its merge commit, so 3.1.4 was never
+# actually released, built, or published to the AUR -- see #188.
 name: release-auto-merge
 
 on: pull_request
@@ -29,4 +38,4 @@ jobs:
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
