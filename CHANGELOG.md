@@ -4,6 +4,13 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.1.4](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.3...v3.1.4) (2026-09-02)
+
+
+### Bug Fixes
+
+* **release:** version-qualify the AUR man page source filename ([#185](https://github.com/alrayyes/washy-washy-cli/issues/185)) ([6924b5d](https://github.com/alrayyes/washy-washy-cli/commit/6924b5d0342105f99758cae2ecf153dce2eac861))
+
 ## [3.1.3](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.2...v3.1.3) (2026-09-01)
 
 
