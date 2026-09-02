@@ -4,6 +4,14 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.1.5](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.4...v3.1.5) (2026-09-02)
+
+
+### Bug Fixes
+
+* **aur:** compute per-architecture checksums by hand, not updpkgsums ([#190](https://github.com/alrayyes/washy-washy-cli/issues/190)) ([1eb8266](https://github.com/alrayyes/washy-washy-cli/commit/1eb8266f8608a7f547d7a9cb53508627ea951951)), closes [#189](https://github.com/alrayyes/washy-washy-cli/issues/189)
+* **release:** use RELEASE_TOKEN to auto-merge release-please's PR ([#191](https://github.com/alrayyes/washy-washy-cli/issues/191)) ([c244193](https://github.com/alrayyes/washy-washy-cli/commit/c24419331ac8787ef09672f087f22b92904d9cf4)), closes [#188](https://github.com/alrayyes/washy-washy-cli/issues/188)
+
 ## [3.1.4](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.3...v3.1.4) (2026-09-02)
 
 
