@@ -4,6 +4,13 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.1.6](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.5...v3.1.6) (2026-09-04)
+
+
+### Bug Fixes
+
+* **ci:** repair broken dependabot auto-merge permissions and token ([#196](https://github.com/alrayyes/washy-washy-cli/issues/196)) ([acd65f8](https://github.com/alrayyes/washy-washy-cli/commit/acd65f805e66d9a1fd1db0d7c58de537680fa24b))
+
 ## [3.1.5](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.4...v3.1.5) (2026-09-02)
 
 
