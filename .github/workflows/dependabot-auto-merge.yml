@@ -22,11 +22,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-      # A github-actions-ecosystem bump touches .github/workflows/ by
-      # definition. Without this, enabling auto-merge on it fails outright:
-      # "Pull request refusing to allow a GitHub App to create or update
-      # workflow ... without `workflows` permission".
-      workflows: write
     steps:
       # Squashed with a subject commitlint accepts. Dependabot writes "Bump x
       # from a to b" and config-conventional refuses the capital B, so the
@@ -37,6 +32,15 @@ jobs:
       # required checks on main have passed. Without a ruleset naming those
       # checks it merges the moment the branch is mergeable, red or not — which
       # is exactly what happened to the first bump this repository ever saw.
+      #
+      # GH_TOKEN has to be RELEASE_TOKEN, not GITHUB_TOKEN: a
+      # github-actions-ecosystem bump touches .github/workflows/ by
+      # definition, and GITHUB_TOKEN can't merge a pull request that
+      # changes a workflow file ("refusing to allow a GitHub App to
+      # create or update workflow ... without `workflows` permission" —
+      # not a grantable permissions: key, since GITHUB_TOKEN can never
+      # hold it). release-auto-merge.yml hit the identical gap and the
+      # fix there is the same: use a real PAT with workflow scope.
       - name: Wave it through once the checks are green
         run: |
           subject=$(printf '%s' "$PR_TITLE" | sed -E 's/^([a-z]+(\([^)]*\))?: )([A-Z])/\1\l\3/')
@@ -44,4 +48,4 @@ jobs:
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           PR_TITLE: ${{ github.event.pull_request.title }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
