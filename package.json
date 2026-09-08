@@ -29,7 +29,7 @@
     "validate-config": "bun run scripts/validate-config.ts"
   },
   "dependencies": {
-    "@washy-washy/core": "1.4.1",
+    "@washy-washy/core": "1.5.0",
     "@washy-washy/pdf": "2.3.8",
     "pdf-lib": "1.17.1"
   },

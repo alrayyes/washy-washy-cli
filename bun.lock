@@ -5,7 +5,7 @@
     "": {
       "name": "washy-washy",
       "dependencies": {
-        "@washy-washy/core": "1.4.1",
+        "@washy-washy/core": "1.5.0",
         "@washy-washy/pdf": "2.3.8",
         "pdf-lib": "1.17.1",
       },
@@ -188,7 +188,7 @@
 
     "@typescript/typescript-win32-x64": ["@typescript/typescript-win32-x64@7.0.2", "", { "os": "win32", "cpu": "x64" }, "sha512-0BQ3HkAHHlKLSp1qRvf3SUhGpGsDuhB/jgFw75guyqbxJqEaS0Cw/VFO8i2nHglJUzQCRtMMR/IBAKE3ETMC4g=="],
 
-    "@washy-washy/core": ["@washy-washy/core@1.4.1", "", { "dependencies": { "csv-parse": "7.0.2" } }, "sha512-8NXdpwnFA8zUFLH1HefBYcsnM6ftsZMyTarSF9M6efVYjjL8dweCMakQGndyDTevIQZ7RZMsCxpxMzZoJ/hMyw=="],
+    "@washy-washy/core": ["@washy-washy/core@1.5.0", "", { "dependencies": { "csv-parse": "7.0.2" } }, "sha512-5/sZqWHxwteAKqkzex1AjdfIRLTJItmXMd3reWaPdgXTA9geb56ExMSJ1kVtS4gh2Xd8w9NOMiVBYZe3R8ibCw=="],
 
     "@washy-washy/pdf": ["@washy-washy/pdf@2.3.8", "", { "dependencies": { "@react-pdf/renderer": "4.6.1", "@washy-washy/core": "1.4.0", "pdf-lib": "1.17.1", "react": "19.2.8" } }, "sha512-GGJ8UUkXiOBvjg0HHZpBouTA9aEiMQOnaerChgk8sR2pWQPc0djEeKLqzY3b/RPa9c9sb8AFowyZdcwNWuorPw=="],
 
