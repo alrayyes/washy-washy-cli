@@ -4,6 +4,13 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.1.10](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.9...v3.1.10) (2026-09-09)
+
+
+### Bug Fixes
+
+* **deps:** bump js-yaml to 4.3.2 for GHSA-2883-xcg3-v3hh ([#216](https://github.com/alrayyes/washy-washy-cli/issues/216)) ([0c5569f](https://github.com/alrayyes/washy-washy-cli/commit/0c5569fc576566ce0135725e3c1b90ee9a13d2fe))
+
 ## [3.1.9](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.8...v3.1.9) (2026-09-08)
 
 
