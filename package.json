@@ -28,6 +28,9 @@
     "typecheck": "tsc --noEmit",
     "validate-config": "bun run scripts/validate-config.ts"
   },
+  "overrides": {
+    "smol-toml": "1.7.2"
+  },
   "dependencies": {
     "@washy-washy/core": "1.5.0",
     "@washy-washy/pdf": "2.3.8",
