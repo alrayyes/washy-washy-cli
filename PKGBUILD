@@ -5,7 +5,7 @@
 # add-os-packaging/design.md) and this just places it, plus the man
 # page. No build() step, no makedepends -- there is nothing to compile.
 #
-# source= points at github.com release assets, never git.higherlearning.eu
+# source= points at github.com release assets, never the internal forge
 # -- that instance returns a 404 on anonymous fetches even for public
 # repos, confirmed on the now-archived scaffold-arch-package.
 pkgname=washy-washy-cli-bin
