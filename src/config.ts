@@ -26,6 +26,15 @@ export async function loadConfig(path: string): Promise<{ file: string; config: 
     return { file, config: configFromJson(source) };
   } catch (error) {
     throw new Error(
+      // The `^` anchor is unreachable: every error `configFromJson` can
+      // throw already starts with the literal "config: " (@washy-washy/core's
+      // own `fail()` helper always prefixes it there, at position 0, and
+      // never repeats it later in the message), so an anchored and an
+      // unanchored `.replace()` of the first occurrence produce
+      // byte-identical output for every message this code can ever see —
+      // the same equivalent-mutant situation `washy-washy-core`#67 hit
+      // with `bom: true` (see stryker.config.mjs for that PR).
+      // Stryker disable next-line Regex
       `${file}: ${error instanceof Error ? error.message.replace(/^config: /, "") : error}`,
     );
   }

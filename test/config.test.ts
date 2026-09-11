@@ -10,11 +10,20 @@ import {
   configToJson,
   parseConfig,
   parseInstructions,
+  parseMachine,
 } from "@washy-washy/core";
 import { loadConfig, resolveConfig } from "../src/config";
-import { DIST_MACHINE, loadMachine } from "../src/machine";
 
-const machine = await loadMachine(DIST_MACHINE);
+// Parsed straight from the committed fixture with `@washy-washy/core`'s own
+// `parseMachine`, not through `../src/machine`'s `loadMachine`: this file is
+// a fixture for config tests, not a test of machine-loading's own
+// fallback/error-wrapping logic (machine.test.ts owns that). Going through
+// `loadMachine` here used to mean this module's own top-level `await`
+// crashed the whole test process — an unrecoverable error between tests
+// rather than a clean test failure, since a top-level await has no
+// try/catch around it — whenever Stryker mutated anything in
+// `loadMachine`'s file-resolution path.
+const machine = parseMachine(await Bun.file("data/machine.json.dist").json());
 
 const HEADER =
   "clothing_type,detergent,fabric_softener,temperature,spin,duration,program,options," +
@@ -165,11 +174,15 @@ describe("loadConfig", () => {
     );
   });
 
+  // Exact suffix, not a substring match: @washy-washy/core's own error
+  // always starts with a "config: " prefix, and this is what proves
+  // loadConfig actually strips it rather than merely not obscuring the
+  // "chart is missing" text some other way.
   test("names the specific field that is wrong, same as parseConfig", async () => {
     const dir = await mkdtemp(join(tmpdir(), "config-"));
     const file = join(dir, "washy-washy.json");
     await writeFile(file, JSON.stringify({ machine }));
 
-    await expect(loadConfig(file)).rejects.toThrow(/chart is missing/);
+    await expect(loadConfig(file)).rejects.toThrow(`${file}: chart is missing`);
   });
 });
