@@ -110,7 +110,7 @@ instead of the scaffold repos' from-source approach.
 
 `pkgname=washy-washy-cli-bin`. `source=` points at the GitHub Release's
 `linux-x86_64`/`linux-aarch64` binary tarballs directly — never
-`git.higherlearning.eu`, which returns a 404 on anonymous fetches even
+the internal forge, which returns a 404 on anonymous fetches even
 for public repos (learned the hard way on the now-archived
 `scaffold-arch-package`).
 A release job regenerates `pkgver`, `sha256sums`, and `.SRCINFO`, then
