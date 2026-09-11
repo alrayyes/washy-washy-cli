@@ -157,6 +157,16 @@ export async function main(argv: string[]): Promise<void> {
   }
 }
 
+// Process-entry glue for a real `bun run src/cli.ts` invocation:
+// `import.meta.main` is never true while `bun test` runs this module, so no
+// in-process test can make Stryker's per-test coverage collector see this
+// block execute — only a spawned subprocess can, and a subprocess is a
+// separate process with its own coverage collector invisible to the parent's
+// inspector session. The logic itself is exercised anyway: generate.test.ts's
+// `run()` helper calls `main()` directly and reimplements this exact
+// try/catch (minus `process.exit`, which would kill the test runner), so a
+// regression here is still caught, just not by mutation testing.
+// Stryker disable all
 if (import.meta.main) {
   main(Bun.argv.slice(2)).catch((error: unknown) => {
     if (error instanceof HelpRequested) {
@@ -167,3 +177,4 @@ if (import.meta.main) {
     process.exit(1);
   });
 }
+// Stryker restore all

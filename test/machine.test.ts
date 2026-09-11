@@ -82,8 +82,49 @@ describe("loadMachine", () => {
     expect(machine.washer.programs.length).toBeGreaterThan(1);
   });
 
+  // Distinct from the test above: DIST_MACHINE already names the `.dist`
+  // file directly, so `loadMachine(DIST_MACHINE)` never actually takes the
+  // fallback branch — the plain path exists under that exact name already.
+  // A fresh directory with only a `.dist` beside a name that does not exist
+  // is what actually exercises the fallback.
+  test("falls back to a fresh .dist when your own file is not there", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "machine-"));
+    const path = join(dir, "machine.json");
+    await writeFile(`${path}.dist`, JSON.stringify(MINIMAL));
+
+    const machine = await loadMachine(path);
+    expect(machine.washer.name).toBe("Test Washer");
+  });
+
+  // Exact message, not a substring regex: the regex used to match by
+  // coincidence even when the "no such machine file" throw was skipped
+  // entirely, because the fallback ".dist" path Bun.file(...).json() then
+  // failed to read also contains "no/such/machine.json" as a prefix — the
+  // "is not valid JSON" wrapper (below) starts with the same file name.
   test("says which file it could not read", async () => {
-    await expect(loadMachine("no/such/machine.json")).rejects.toThrow(/no\/such\/machine\.json/);
+    await expect(loadMachine("no/such/machine.json")).rejects.toThrow(
+      "no such machine file: no/such/machine.json",
+    );
+  });
+
+  test("says the file is not valid JSON, distinct from a validation failure", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "machine-"));
+    const path = join(dir, "machine.json");
+    await writeFile(path, "not json");
+
+    await expect(loadMachine(path)).rejects.toThrow(`${path} is not valid JSON:`);
+  });
+
+  // Exact suffix, not a substring match: @washy-washy/core's own error
+  // always starts with a "machine: " prefix, and this is what proves
+  // loadMachine actually strips it rather than merely not obscuring the
+  // "iron is missing" text some other way.
+  test("wraps a parseMachine validation failure with the file name, prefix stripped", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "machine-"));
+    const path = join(dir, "machine.json");
+    await writeFile(path, JSON.stringify({ washer: MINIMAL.washer }));
+
+    await expect(loadMachine(path)).rejects.toThrow(`${path}: iron is missing`);
   });
 });
 

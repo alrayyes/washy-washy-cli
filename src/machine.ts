@@ -39,6 +39,13 @@ export async function loadMachine(path: string): Promise<Machine> {
     return parseMachine(parsed);
   } catch (error) {
     throw new Error(
+      // Equivalent mutant, same reasoning as config.ts's own `^config: `
+      // replace: every error `parseMachine` throws is built by
+      // @washy-washy/core's `fail()` helper as `` `machine: ${what}` ``, so
+      // "machine: " is always the literal start of the message and never
+      // repeats — an anchored and unanchored `.replace()` here can never
+      // observably differ.
+      // Stryker disable next-line Regex
       `${file}: ${error instanceof Error ? error.message.replace(/^machine: /, "") : error}`,
     );
   }

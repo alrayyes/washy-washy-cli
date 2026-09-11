@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { outputStem, parseArgs } from "../src/cli";
+import { HelpRequested, outputStem, parseArgs } from "../src/cli";
 
 describe("outputStem", () => {
   test("names the PDFs after the input", () => {
@@ -36,7 +36,26 @@ describe("parseArgs", () => {
     expect(() => parseArgs(["--out"])).toThrow(/--out needs a directory/);
   });
 
-  test("--help throws the usage text rather than running", () => {
-    expect(() => parseArgs(["--help"])).toThrow(/Usage: bun run generate/);
+  // Exact text, not a substring match: the usage text is the only thing a
+  // real `--help` invocation ever prints, so every line and the blank line
+  // between them is load-bearing, not just the opening "Usage:" line.
+  test("--help throws the exact usage text rather than running", () => {
+    let caught: unknown;
+    try {
+      parseArgs(["--help"]);
+    } catch (error) {
+      caught = error;
+    }
+
+    expect(caught).toBeInstanceOf(HelpRequested);
+    expect((caught as Error).message).toBe(
+      [
+        "Usage: bun run generate [config] [--out <dir>]",
+        "",
+        "  config            machine+chart config to read (default: data/washy-washy.json,",
+        "                    falling back to the committed .dist)",
+        "  --out <dir>       where the six PDFs go (default: out)",
+      ].join("\n"),
+    );
   });
 });
