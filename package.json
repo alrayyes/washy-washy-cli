@@ -51,6 +51,9 @@
     "sort-package-json": "4.0.0",
     "typescript": "7.0.2"
   },
+  "patchedDependencies": {
+    "pdfkit@0.20.1": "patches/pdfkit@0.20.1.patch"
+  },
   "trustedDependencies": [
     "lefthook"
   ]
