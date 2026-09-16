@@ -8,7 +8,13 @@ import {
   resolve,
   type Variant,
 } from "@washy-washy/core";
-import { renderCard, renderPhone, renderPrint } from "@washy-washy/pdf";
+import {
+  renderCard,
+  renderPhone,
+  renderPrint,
+  sanitizeInstructions,
+  sanitizeMachine,
+} from "@washy-washy/pdf";
 import { loadConfig } from "./config";
 
 const DEFAULT_CONFIG = "data/washy-washy.json";
@@ -92,21 +98,26 @@ export async function main(argv: string[]): Promise<void> {
 
   await mkdir(out, { recursive: true });
   const stem = outputStem(file);
-  const dropped = new Set<string>();
+  // Every render call below re-sanitizes the same `items`/`machine` (or a
+  // subset of `items`), so its `dropped` is always a subset of this one —
+  // computing it once here, rather than collecting from each render result,
+  // is what actually varies with the chart instead of just repeating it.
+  const dropped = new Set([
+    ...sanitizeInstructions(items).dropped,
+    ...sanitizeMachine(machine).dropped,
+  ]);
 
   const written = await Promise.all(
     SHEETS.flatMap(({ variant, suffix }) => [
       (async () => {
         const path = join(out, `${stem}-phone${suffix}.pdf`);
         const phone = await renderPhone(items, machine, variant);
-        for (const character of phone.dropped) dropped.add(character);
         await writeFile(path, phone.pdf);
         return `${path}  one page, ${Math.round(phone.height)} pt tall (${phone.attempts} layout passes)`;
       })(),
       (async () => {
         const path = join(out, `${stem}-print${suffix}.pdf`);
         const print = await renderPrint(items, machine, variant);
-        for (const character of print.dropped) dropped.add(character);
         await writeFile(path, print.pdf);
         return path;
       })(),
@@ -121,7 +132,6 @@ export async function main(argv: string[]): Promise<void> {
         `${stem}-card-${group.map((item) => slug(item.clothingType)).join("+")}.pdf`,
       );
       const card = await renderCard(group, machine);
-      for (const character of card.dropped) dropped.add(character);
       await writeFile(path, card.pdf);
       return path;
     }),
