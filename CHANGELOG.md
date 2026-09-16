@@ -4,6 +4,13 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.1.13](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.12...v3.1.13) (2026-09-16)
+
+
+### Bug Fixes
+
+* **deps:** patch pdfkit's standard-fonts loader for bun build --compile ([#232](https://github.com/alrayyes/washy-washy-cli/issues/232)) ([61aa1d8](https://github.com/alrayyes/washy-washy-cli/commit/61aa1d82a684ab5b09ce0b41359553dc6b1a301f))
+
 ## [3.1.12](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.11...v3.1.12) (2026-09-15)
 
 
