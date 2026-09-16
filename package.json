@@ -30,12 +30,14 @@
     "validate-config": "bun run scripts/validate-config.ts"
   },
   "overrides": {
+    "@react-pdf/font": "4.0.11",
+    "@types/node": "26.2.0",
     "qs": "6.16.0",
     "smol-toml": "1.7.2"
   },
   "dependencies": {
     "@washy-washy/core": "1.5.6",
-    "@washy-washy/pdf": "2.4.2",
+    "@washy-washy/pdf": "2.4.3",
     "pdf-lib": "1.17.1"
   },
   "devDependencies": {
@@ -50,9 +52,6 @@
     "prettier": "3.9.6",
     "sort-package-json": "4.0.0",
     "typescript": "7.0.2"
-  },
-  "patchedDependencies": {
-    "pdfkit@0.20.1": "patches/pdfkit@0.20.1.patch"
   },
   "trustedDependencies": [
     "lefthook"

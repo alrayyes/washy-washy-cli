@@ -11,7 +11,6 @@ FROM oven/bun:1.4.2-alpine@sha256:d888c0ae6c86d7866ff10c5aafdd9077b36aee6455b33d
 
 WORKDIR /app
 COPY package.json bun.lock ./
-COPY patches ./patches
 RUN bun install --frozen-lockfile --production --ignore-scripts
 
 FROM oven/bun:1.4.2-alpine@sha256:d888c0ae6c86d7866ff10c5aafdd9077b36aee6455b33dd270fb93c0dd5cef6f AS runtime
