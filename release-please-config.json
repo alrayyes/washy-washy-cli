@@ -4,7 +4,46 @@
   "include-component-in-tag": false,
   "packages": {
     ".": {
-      "bootstrap-sha": "01256d8c1a62b0e6ac2640a47a45235e170df873"
+      "bootstrap-sha": "01256d8c1a62b0e6ac2640a47a45235e170df873",
+      "exclude-paths": [
+        ".claude",
+        ".dockerignore",
+        ".editorconfig",
+        ".gitattributes",
+        ".github",
+        ".gitignore",
+        ".ltex.json",
+        ".markdownlint-cli2.yaml",
+        ".prettierignore",
+        ".prettierrc",
+        ".vale.ini",
+        "CHANGELOG.md",
+        "CLAUDE.md",
+        "CONTRIBUTING.md",
+        "Dockerfile",
+        "ENVIRONMENT.md",
+        "INSTALL.md",
+        "LICENSE",
+        "PKGBUILD",
+        "README.md",
+        "SECURITY.md",
+        "biome.json",
+        "bun.lock",
+        "bunfig.toml",
+        "codecov.yml",
+        "commitlint.config.js",
+        "docs",
+        "flake.lock",
+        "flake.nix",
+        "lefthook.yml",
+        "nfpm.yaml",
+        "openspec",
+        "package.json",
+        "scripts",
+        "styles",
+        "test",
+        "tsconfig.json"
+      ]
     }
   }
 }
