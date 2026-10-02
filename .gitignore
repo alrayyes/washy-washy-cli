@@ -18,6 +18,10 @@ docs/washy-washy-card-*.pdf
 coverage
 *.lcov
 
+# Stryker mutation testing
+.stryker-tmp
+reports/mutation
+
 # logs
 logs
 _.log
