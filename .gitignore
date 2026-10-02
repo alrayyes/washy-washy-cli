@@ -44,3 +44,6 @@ styles/proselint
 
 # `nix build`'s own output symlink.
 /result
+
+# mutation-test output (HTML report), regenerated on every run
+reports
