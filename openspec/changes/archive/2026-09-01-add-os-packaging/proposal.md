@@ -17,7 +17,7 @@ install everything else on their system.
   - **AUR**: a binary `PKGBUILD` (`pkgname=washy-washy-cli-bin`) whose
     `source=` points at the tagged release tarball/binary on
     `github.com`, pushed to `ssh://aur@aur.archlinux.org/washy-washy-cli-bin.git`.
-    Never sourced from `git.higherlearning.eu` — that instance returns a
+    Never sourced from the internal forge — that instance returns a
     404 on anonymous fetches even for public repos.
   - **`.deb`**: built with `nfpm` from the compiled binary, attached as a
     release asset. Installed with `dpkg -i`; no apt repository.

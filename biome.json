@@ -5,7 +5,9 @@
       "**",
       "!**/node_modules",
       "!out",
+      "!reports",
       "!**/dist",
+      "!**/reports",
       "!styles/Google",
       "!styles/proselint"
     ]

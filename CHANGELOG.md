@@ -4,6 +4,48 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.1.16](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.15...v3.1.16) (2026-10-02)
+
+
+### Bug Fixes
+
+* **ci:** re-run release-auto-merge when release-please adds its label ([#249](https://github.com/alrayyes/washy-washy-cli/issues/249)) ([c73927a](https://github.com/alrayyes/washy-washy-cli/commit/c73927ad95fd7813ad705e3744ca06ba34d1a375)), closes [#248](https://github.com/alrayyes/washy-washy-cli/issues/248)
+
+## [3.1.15](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.14...v3.1.15) (2026-09-29)
+
+
+### Bug Fixes
+
+* **deps:** bump @washy-washy/pdf from 2.4.3 to 2.5.2 ([8922b89](https://github.com/alrayyes/washy-washy-cli/commit/8922b89bbd9bbde5a0c26c9545f693e86f10c07c))
+
+## [3.1.14](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.13...v3.1.14) (2026-09-16)
+
+
+### Bug Fixes
+
+* **deps:** bump @washy-washy/pdf to 2.4.3, drop the pdfkit patch ([#234](https://github.com/alrayyes/washy-washy-cli/issues/234)) ([eb67b33](https://github.com/alrayyes/washy-washy-cli/commit/eb67b333a3326d13e93f25d23006bbf10cf6ddfa))
+
+## [3.1.13](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.12...v3.1.13) (2026-09-16)
+
+
+### Bug Fixes
+
+* **deps:** patch pdfkit's standard-fonts loader for bun build --compile ([#232](https://github.com/alrayyes/washy-washy-cli/issues/232)) ([61aa1d8](https://github.com/alrayyes/washy-washy-cli/commit/61aa1d82a684ab5b09ce0b41359553dc6b1a301f))
+
+## [3.1.12](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.11...v3.1.12) (2026-09-15)
+
+
+### Bug Fixes
+
+* **deps:** bump @washy-washy/pdf from 2.3.8 to 2.4.2 ([00bafc7](https://github.com/alrayyes/washy-washy-cli/commit/00bafc7993ad3c805f49f401a1415fa152b382a8))
+
+## [3.1.11](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.10...v3.1.11) (2026-09-15)
+
+
+### Bug Fixes
+
+* **deps:** bump @washy-washy/core from 1.5.0 to 1.5.6 ([5756d9a](https://github.com/alrayyes/washy-washy-cli/commit/5756d9a74da48986b42e0ca2bbd3126f012ed5cd))
+
 ## [3.1.10](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.9...v3.1.10) (2026-09-09)
 
 
