@@ -314,6 +314,30 @@ describe("bun run generate", () => {
       ).toBe(true);
     });
 
+    // A separate run rather than a shared-fixture assertion: the committed
+    // config's chart collapses to several card groups, which only ever
+    // exercises the "s" branch of the plural. A chart with exactly one
+    // pile, and so exactly one card, is what actually reaches the
+    // singular "1 card PDF," (no trailing "s") wording.
+    test("says '1 card PDF,' singular, when there is exactly one", async () => {
+      const dir = await mkdtemp(join(tmpdir(), "single-card-"));
+      const config = join(dir, "config.json");
+      const { config: loaded } = await loadConfig(CONFIG);
+      const [firstPile] = loaded.chart;
+      await writeFile(
+        config,
+        configToJson({ machine: loaded.machine, chart: firstPile ? [firstPile] : [] }),
+      );
+
+      const result = await run([config, "--out", dir]);
+
+      expect(result.exitCode).toBe(0);
+      expect(result.stdout).toContain("1 card PDF,");
+      expect(result.stdout).not.toContain("1 card PDFs,");
+
+      await rm(dir, { recursive: true, force: true });
+    });
+
     test("renders a pile's reference citation on its own card", async () => {
       const pdf = await readFile(join(out, "washy-washy-card-merino-wool+cashmere-blend.pdf"));
       const text = await words(pdf);
@@ -460,10 +484,13 @@ describe("bun run generate, a chart with non-WinAnsi text", () => {
         ],
       },
     };
+    // Two distinct dropped characters, not one: with only one, joining them
+    // with " " and joining them with "" produce the same one-element
+    // output, so a single-character chart can never tell the two apart.
     const csv =
       "clothing_type,detergent,fabric_softener,temperature,spin,duration,program,options," +
       "ironing,ironing_notes,iron_setting,drying,colour_group,mix_tags,notes,reference_name,reference_link\n" +
-      "Towels,Powder,no,40,1200,~2:00,Cottons,,no,,,Tumble dry,white,,Dries fast → check dial,,\n";
+      "Towels,Powder,no,40,1200,~2:00,Cottons,,no,,,Tumble dry,white,,Dries fast → check ★ dial,,\n";
     const chart = parseInstructions(csv, machine);
     await writeFile(config, configToJson({ machine, chart }));
 
@@ -472,6 +499,10 @@ describe("bun run generate, a chart with non-WinAnsi text", () => {
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain("Characters the font can't render");
     expect(result.stdout).toContain("→");
+    expect(result.stdout).toContain("★");
+    // Exactly one space between them, in whichever order rendering found
+    // them first — proves the join separator is " ", not "".
+    expect(result.stdout).toMatch(/→ ★|★ →/);
 
     await rm(dir, { recursive: true, force: true });
   }, 60_000);
