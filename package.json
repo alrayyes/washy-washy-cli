@@ -42,13 +42,13 @@
     "pdf-lib": "1.17.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.14",
+    "@biomejs/biome": "2.5.15",
     "@commitlint/cli": "21.2.3",
     "@commitlint/config-conventional": "21.2.3",
     "@hughescr/stryker-bun-runner": "1.4.0",
     "@stryker-mutator/core": "10.0.0",
     "@types/bun": "1.4.2",
-    "lefthook": "2.1.14",
+    "lefthook": "2.1.16",
     "markdownlint-cli2": "0.23.3",
     "prettier": "3.9.9",
     "sort-package-json": "4.0.0",
