@@ -4,6 +4,13 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.1.17](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.16...v3.1.17) (2026-10-06)
+
+
+### Bug Fixes
+
+* **ci:** clear the bun audit advisories blocking every PR ([#258](https://github.com/alrayyes/washy-washy-cli/issues/258)) ([3a76312](https://github.com/alrayyes/washy-washy-cli/commit/3a763126556ea934e04be417bf84aff89473d505))
+
 ## [3.1.16](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.15...v3.1.16) (2026-10-02)
 
 
