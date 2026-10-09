@@ -51,3 +51,6 @@ styles/proselint
 
 # mutation-test output (HTML report), regenerated on every run
 reports
+
+# assembled reports (scripts/assemble-reports.ts)
+site
