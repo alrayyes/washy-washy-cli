@@ -460,6 +460,16 @@ shares `@washy-washy/core`'s chart parsing, mixing rules and machine
 validation with this CLI as a published dependency, so a rule change in
 core lands in both once each picks up the new version.
 
+## Reports
+
+Every push to `main` that passes the pipeline publishes its test and coverage
+reports at [apis.ryankes.eu/washy-washy-cli/reports](https://apis.ryankes.eu/washy-washy-cli/reports/):
+
+- [Test results](https://apis.ryankes.eu/washy-washy-cli/reports/tests/) as JUnit XML.
+- [Coverage](https://apis.ryankes.eu/washy-washy-cli/reports/coverage/) as an HTML view, with
+  [`coverage.xml`](https://apis.ryankes.eu/washy-washy-cli/reports/coverage/coverage.xml)
+  in Cobertura format and Bun's own `lcov.info` beside it.
+
 ## Contributing
 
 Everything about working on this — the commands, the linters, the tests, the git
