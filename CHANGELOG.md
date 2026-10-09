@@ -4,6 +4,13 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.2.0](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.17...v3.2.0) (2026-10-09)
+
+
+### Features
+
+* **ci:** publish the test and coverage reports to GitHub Pages ([#261](https://github.com/alrayyes/washy-washy-cli/issues/261)) ([59bf11f](https://github.com/alrayyes/washy-washy-cli/commit/59bf11f0d72723d22e98d62c9861ce58b2b2092f))
+
 ## [3.1.17](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.16...v3.1.17) (2026-10-06)
 
 
