@@ -4,6 +4,13 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.2.1](https://github.com/alrayyes/washy-washy-cli/compare/v3.2.0...v3.2.1) (2026-10-10)
+
+
+### Bug Fixes
+
+* **hooks:** lint only staged Markdown in pre-commit ([#264](https://github.com/alrayyes/washy-washy-cli/issues/264)) ([b01f687](https://github.com/alrayyes/washy-washy-cli/commit/b01f687aa546d9bde736b3f0af599cf7df40527d)), closes [#263](https://github.com/alrayyes/washy-washy-cli/issues/263)
+
 ## [3.2.0](https://github.com/alrayyes/washy-washy-cli/compare/v3.1.17...v3.2.0) (2026-10-09)
 
 
