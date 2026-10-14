@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.3.14
+          bun-version: 1.4.3
       - run: bun install --frozen-lockfile
       # braces <=3.0.3 has no patched release. It's a dev-only transitive of
       # markdownlint-cli2 and never ships. Drop the ignore once braces fixes it.
@@ -103,7 +103,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.3.14
+          bun-version: 1.4.3
       - run: bun install --frozen-lockfile
       - run: bun run mutation
 
@@ -129,7 +129,7 @@ jobs:
           fetch-depth: 0
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.3.14
+          bun-version: 1.4.3
       # commitlint resolves @commitlint/config-conventional as a sibling
       # package, so bunx alone will not find it.
       - run: bun install --frozen-lockfile
@@ -164,7 +164,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.3.14
+          bun-version: 1.4.3
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.cache/ltex
@@ -181,7 +181,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.3.14
+          bun-version: 1.4.3
       - run: bun install --frozen-lockfile
       - run: bun run prose:sync
       - run: bun run lint:prose:advice
@@ -248,7 +248,7 @@ jobs:
               set -euo pipefail
               apt-get update -qq
               apt-get install -y -qq curl unzip ca-certificates scdoc gettext-base
-              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.3.14
+              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.4.3
               export PATH=/usr/local/bin:$PATH
               bun install --frozen-lockfile --ignore-scripts
               bun build --compile --target=bun-linux-x64 --outfile=dist/washy-washy-cli-linux-amd64 src/cli.ts
@@ -291,7 +291,7 @@ jobs:
               set -euo pipefail
               apt-get update -qq
               apt-get install -y -qq curl unzip ca-certificates scdoc gettext-base
-              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.3.14
+              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.4.3
               export PATH=/usr/local/bin:$PATH
               bun install --frozen-lockfile --ignore-scripts
               bun build --compile --target=bun-linux-x64 --outfile=dist/washy-washy-cli-linux-amd64 src/cli.ts
@@ -341,7 +341,7 @@ jobs:
               # to check for.
               sed -i "/^NoExtract.*usr\/share\/man/d" /etc/pacman.conf
               pacman -Sy --noconfirm base-devel curl unzip scdoc gawk man-db >/dev/null
-              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.3.14
+              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.4.3
               export PATH=/usr/local/bin:$PATH
               (cd /work && bun install --frozen-lockfile --ignore-scripts)
               mkdir -p /tmp/ci-pkg && cd /tmp/ci-pkg
@@ -402,7 +402,7 @@ jobs:
               set -euo pipefail
               sed -i "/^NoExtract.*usr\/share\/man/d" /etc/pacman.conf
               pacman -Sy --noconfirm base-devel curl unzip scdoc gawk python >/dev/null
-              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.3.14
+              curl -fsSL https://bun.sh/install | BUN_INSTALL=/usr/local bash -s -- bun-v1.4.3
               export PATH=/usr/local/bin:$PATH
               (cd /work && bun install --frozen-lockfile --ignore-scripts)
 
@@ -460,7 +460,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.3.14
+          bun-version: 1.4.3
       - run: bun install --frozen-lockfile
       - run: bun run generate
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -502,7 +502,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
         with:
-          bun-version: 1.3.14
+          bun-version: 1.4.3
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: test-reports
