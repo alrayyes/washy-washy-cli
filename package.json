@@ -37,7 +37,7 @@
     "smol-toml": "1.9.0"
   },
   "dependencies": {
-    "@washy-washy/core": "1.5.6",
+    "@washy-washy/core": "1.6.1",
     "@washy-washy/pdf": "2.5.2",
     "pdf-lib": "1.17.1"
   },
