@@ -35,11 +35,13 @@ const SHEETS: { variant: Variant; suffix: string }[] = [
 
 function usage(): string {
   return [
-    "Usage: washy-washy-cli [config] [--out <dir>]",
+    "Usage: washy-washy-cli [config] [-o|--out <dir>]",
+    "       washy-washy-cli [-h|--help]",
     "",
     `  config            machine+chart config to read (default: ${DEFAULT_CONFIG},`,
     "                    falling back to the committed .dist)",
-    `  --out <dir>       where the six PDFs go (default: ${DEFAULT_OUT})`,
+    `  -o, --out <dir>   where the six PDFs go (default: ${DEFAULT_OUT})`,
+    "  -h, --help        show this help",
   ].join("\n");
 }
 
