@@ -50,11 +50,13 @@ describe("parseArgs", () => {
     expect(caught).toBeInstanceOf(HelpRequested);
     expect((caught as Error).message).toBe(
       [
-        "Usage: washy-washy-cli [config] [--out <dir>]",
+        "Usage: washy-washy-cli [config] [-o|--out <dir>]",
+        "       washy-washy-cli [-h|--help]",
         "",
         "  config            machine+chart config to read (default: data/washy-washy.json,",
         "                    falling back to the committed .dist)",
-        "  --out <dir>       where the six PDFs go (default: out)",
+        "  -o, --out <dir>   where the six PDFs go (default: out)",
+        "  -h, --help        show this help",
       ].join("\n"),
     );
   });
