@@ -35,7 +35,7 @@ const SHEETS: { variant: Variant; suffix: string }[] = [
 
 function usage(): string {
   return [
-    "Usage: bun run generate [config] [--out <dir>]",
+    "Usage: washy-washy-cli [config] [--out <dir>]",
     "",
     `  config            machine+chart config to read (default: ${DEFAULT_CONFIG},`,
     "                    falling back to the committed .dist)",

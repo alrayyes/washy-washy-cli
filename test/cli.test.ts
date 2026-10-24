@@ -50,7 +50,7 @@ describe("parseArgs", () => {
     expect(caught).toBeInstanceOf(HelpRequested);
     expect((caught as Error).message).toBe(
       [
-        "Usage: bun run generate [config] [--out <dir>]",
+        "Usage: washy-washy-cli [config] [--out <dir>]",
         "",
         "  config            machine+chart config to read (default: data/washy-washy.json,",
         "                    falling back to the committed .dist)",
