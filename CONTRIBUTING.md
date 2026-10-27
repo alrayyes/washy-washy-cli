@@ -23,6 +23,11 @@ forget and no clone that quietly has no hooks. `prose:sync` is separate because
 Vale is a Go binary rather than a package — it checks the release against its own
 checksums, and it wants network access and `tar`, once.
 
+[gitleaks](https://github.com/gitleaks/gitleaks) has to be on your `PATH` too,
+since the hooks call it and it doesn't come from npm. It scans the staged
+changes on every commit and the whole history on every push, and CI scans the
+whole history again on every pull request.
+
 ## Architecture
 
 This repo is the file-I/O shell around two published packages that own every
@@ -201,9 +206,10 @@ or end-to-end layer:
 ## The git hooks
 
 `lefthook.yml` runs the same commands CI does, so the two cannot drift. On
-commit, Biome, Prettier and markdownlint fix what they can over the staged files
-and restage it, Vale checks the prose for errors, and commitlint reads the
-message. On push, every linter runs again in check mode over the whole tree,
+commit, gitleaks scans the staged changes for secrets, Biome, Prettier and
+markdownlint fix what they can over the staged files and restage it, Vale checks
+the prose for errors, and commitlint reads the message. On push, gitleaks scans
+the whole history and every linter runs again in check mode over the whole tree,
 followed by the typecheck and the tests — nothing at that point writes, so the
 commit you push is the one you reviewed. The Dockerfile passes
 `--ignore-scripts`, so the image build skips the hook install.
