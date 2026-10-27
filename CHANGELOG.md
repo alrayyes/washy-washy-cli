@@ -4,6 +4,13 @@
 
 * validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
+## [3.2.8](https://github.com/alrayyes/washy-washy-cli/compare/v3.2.7...v3.2.8) (2026-10-27)
+
+
+### Bug Fixes
+
+* **deps:** bump oven/bun from 1.4.3-alpine to 1.4.4-alpine ([396b5b1](https://github.com/alrayyes/washy-washy-cli/commit/396b5b1d233844cc4a6b540b1edf25966280ef18))
+
 ## [3.2.7](https://github.com/alrayyes/washy-washy-cli/compare/v3.2.6...v3.2.7) (2026-10-24)
 
 
