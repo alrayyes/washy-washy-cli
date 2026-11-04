@@ -159,18 +159,38 @@ jobs:
             dist/*.deb
             dist/*.rpm
 
+      # One file at a time, retried, and judged by the end state rather than
+      # the exit code. `gh release upload --clobber` can time out client-side
+      # after GitHub has already stored the asset; the retry then hits
+      # "ReleaseAsset.name already exists" (422) and fails a release whose
+      # assets are all there (v4.0.0). Retrying is safe because --clobber
+      # replaces; the final check is what actually decides pass or fail.
       - name: Upload release assets
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release upload "$TAG_NAME" \
-            dist/washy-washy-cli-linux-x64 \
-            dist/washy-washy-cli-linux-arm64 \
-            dist/washy-washy-cli.1.gz \
-            dist/*.deb \
-            dist/*.rpm \
-            --repo "${{ github.repository }}" \
-            --clobber
+          set -uo pipefail
+          files=(
+            dist/washy-washy-cli-linux-x64
+            dist/washy-washy-cli-linux-arm64
+            dist/washy-washy-cli.1.gz
+            dist/*.deb
+            dist/*.rpm
+          )
+          for f in "${files[@]}"; do
+            for attempt in 1 2 3; do
+              gh release upload "$TAG_NAME" "$f" --repo "${{ github.repository }}" --clobber && break
+              echo "::warning::upload of $f failed (attempt $attempt)"
+              sleep $((attempt * 5))
+            done
+          done
+          uploaded=$(gh release view "$TAG_NAME" --repo "${{ github.repository }}" --json assets --jq '.assets[].name')
+          missing=0
+          for f in "${files[@]}"; do
+            grep -qxF "$(basename "$f")" <<< "$uploaded" || { echo "::error::$f is not on the release"; missing=1; }
+          done
+          exit "$missing"
 
   publish-aur:
     needs: [release-please, build-packages]
