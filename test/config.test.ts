@@ -8,9 +8,10 @@ import {
   chartToJson,
   configFromJson,
   configToJson,
+  instructionsFromRows,
   parseConfig,
-  parseInstructions,
   parseMachine,
+  type Row,
 } from "@washy-washy/core";
 import { loadConfig, resolveConfig } from "../src/config";
 
@@ -25,20 +26,29 @@ import { loadConfig, resolveConfig } from "../src/config";
 // `loadMachine`'s file-resolution path.
 const machine = parseMachine(await Bun.file("data/machine.json.dist").json());
 
-const HEADER =
-  "clothing_type,detergent,fabric_softener,temperature,spin,duration,program,options," +
-  "ironing,ironing_notes,iron_setting,drying,colour_group,mix_tags,notes,reference_name,reference_link";
-
-const ROW =
-  "Dark,Dark liquid,no,30,800,~2:00,Cottons,Extra Rinse,yes,Inside out,2,Line dry,dark,dye-bleeder,,,";
-
-function csv(row = ROW): string {
-  return `${HEADER}\n${row}\n`;
-}
+const ROW: Row = {
+  clothing_type: "Dark",
+  detergent: "Dark liquid",
+  fabric_softener: "no",
+  temperature: "30",
+  spin: "800",
+  duration: "~2:00",
+  program: "Cottons",
+  options: "Extra Rinse",
+  ironing: "yes",
+  ironing_notes: "Inside out",
+  iron_setting: "2",
+  drying: "Line dry",
+  colour_group: "dark",
+  mix_tags: "dye-bleeder",
+  notes: "",
+  reference_name: "",
+  reference_link: "",
+};
 
 describe("parseConfig", () => {
   test("takes a machine and a chart together", () => {
-    const chart = parseInstructions(csv(), machine);
+    const chart = instructionsFromRows([ROW], machine);
     const config = parseConfig({ machine, chart: JSON.parse(chartToJson(chart)) });
 
     expect(config.machine.washer.name).toEqual(machine.washer.name);
@@ -64,7 +74,7 @@ describe("parseConfig", () => {
   });
 
   test("names the specific row and column that is wrong, same as instructionsFromRows", () => {
-    const chart = parseInstructions(csv(), machine);
+    const chart = instructionsFromRows([ROW], machine);
     const [row] = JSON.parse(chartToJson(chart));
     row.program = "Not A Programme";
 
@@ -74,7 +84,7 @@ describe("parseConfig", () => {
 
 describe("configToJson / configFromJson", () => {
   test("round-trips a config", () => {
-    const chart = parseInstructions(csv(), machine);
+    const chart = instructionsFromRows([ROW], machine);
     const original = { machine, chart };
 
     const roundTripped = configFromJson(configToJson(original));
@@ -87,7 +97,7 @@ describe("configToJson / configFromJson", () => {
   });
 
   test("leads the JSON with a $schema key an editor can use", () => {
-    const chart = parseInstructions(csv(), machine);
+    const chart = instructionsFromRows([ROW], machine);
     const written = JSON.parse(configToJson({ machine, chart }));
 
     expect(Object.keys(written)[0]).toBe("$schema");
@@ -97,7 +107,7 @@ describe("configToJson / configFromJson", () => {
 
 describe("the JSON chart format", () => {
   test("round-trips a chart without losing or changing anything", () => {
-    const original = parseInstructions(csv(), machine);
+    const original = instructionsFromRows([ROW], machine);
     const roundTripped = chartFromJson(chartToJson(original), machine);
     expect(roundTripped).toEqual(original);
   });
@@ -110,8 +120,8 @@ describe("the JSON chart format", () => {
     expect(() => chartFromJson("not json", machine)).toThrow(/not valid JSON/);
   });
 
-  test("applies the same machine-facing validation as the CSV parser", () => {
-    const [row] = JSON.parse(chartToJson(parseInstructions(csv(), machine)));
+  test("applies the same machine-facing validation as instructionsFromRows", () => {
+    const [row] = JSON.parse(chartToJson(instructionsFromRows([ROW], machine)));
     row.program = "Turbo Wash";
     expect(() => chartFromJson(JSON.stringify([row]), machine)).toThrow(/column "program"/);
   });
@@ -145,7 +155,7 @@ describe("resolveConfig", () => {
 
 describe("loadConfig", () => {
   test("reads a config from a file", async () => {
-    const chart = parseInstructions(csv(), machine);
+    const chart = instructionsFromRows([ROW], machine);
     const dir = await mkdtemp(join(tmpdir(), "config-"));
     const file = join(dir, "washy-washy.json");
     await writeFile(file, configToJson({ machine, chart }));
@@ -161,7 +171,7 @@ describe("loadConfig", () => {
   test("falls back to the committed .dist", async () => {
     const dir = await mkdtemp(join(tmpdir(), "config-"));
     const distFile = join(dir, "washy-washy.json.dist");
-    const chart = parseInstructions(csv(), machine);
+    const chart = instructionsFromRows([ROW], machine);
     await writeFile(distFile, configToJson({ machine, chart }));
 
     const loaded = await loadConfig(join(dir, "washy-washy.json"));

@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { inflateSync } from "node:zlib";
-import { cardGroups, configToJson, parseInstructions } from "@washy-washy/core";
+import { cardGroups, chartFromJson, configToJson } from "@washy-washy/core";
 import { PDFDocument, PDFName, PDFRawStream } from "pdf-lib";
 import { main, slug } from "../src/cli";
 import { loadConfig } from "../src/config";
@@ -405,12 +405,47 @@ describe("bun run generate, a different machine", () => {
         ],
       },
     };
-    const csv =
-      "clothing_type,detergent,fabric_softener,temperature,spin,duration,program,options," +
-      "ironing,ironing_notes,iron_setting,drying,colour_group,mix_tags,notes,reference_name,reference_link\n" +
-      "Linge blanc,Lessive,no,40,1000,~2:00,Coton,Prélavage,yes,Fer chaud,2,Étendre,white,,,,\n" +
-      "Pulls,Lessive laine,no,30,0,~0:40,Laine,,no,,,À plat,any,,,,\n";
-    const chart = parseInstructions(csv, machine);
+    const rows = [
+      {
+        clothing_type: "Linge blanc",
+        detergent: "Lessive",
+        fabric_softener: "no",
+        temperature: "40",
+        spin: "1000",
+        duration: "~2:00",
+        program: "Coton",
+        options: "Prélavage",
+        ironing: "yes",
+        ironing_notes: "Fer chaud",
+        iron_setting: "2",
+        drying: "Étendre",
+        colour_group: "white",
+        mix_tags: "",
+        notes: "",
+        reference_name: "",
+        reference_link: "",
+      },
+      {
+        clothing_type: "Pulls",
+        detergent: "Lessive laine",
+        fabric_softener: "no",
+        temperature: "30",
+        spin: "0",
+        duration: "~0:40",
+        program: "Laine",
+        options: "",
+        ironing: "no",
+        ironing_notes: "",
+        iron_setting: "",
+        drying: "À plat",
+        colour_group: "any",
+        mix_tags: "",
+        notes: "",
+        reference_name: "",
+        reference_link: "",
+      },
+    ];
+    const chart = chartFromJson(JSON.stringify(rows), machine);
     await writeFile(config, configToJson({ machine, chart }));
 
     const result = await run([config, "--out", dir]);
@@ -487,11 +522,28 @@ describe("bun run generate, a chart with non-WinAnsi text", () => {
     // Two distinct dropped characters, not one: with only one, joining them
     // with " " and joining them with "" produce the same one-element
     // output, so a single-character chart can never tell the two apart.
-    const csv =
-      "clothing_type,detergent,fabric_softener,temperature,spin,duration,program,options," +
-      "ironing,ironing_notes,iron_setting,drying,colour_group,mix_tags,notes,reference_name,reference_link\n" +
-      "Towels,Powder,no,40,1200,~2:00,Cottons,,no,,,Tumble dry,white,,Dries fast → check ★ dial,,\n";
-    const chart = parseInstructions(csv, machine);
+    const rows = [
+      {
+        clothing_type: "Towels",
+        detergent: "Powder",
+        fabric_softener: "no",
+        temperature: "40",
+        spin: "1200",
+        duration: "~2:00",
+        program: "Cottons",
+        options: "",
+        ironing: "no",
+        ironing_notes: "",
+        iron_setting: "",
+        drying: "Tumble dry",
+        colour_group: "white",
+        mix_tags: "",
+        notes: "Dries fast → check ★ dial",
+        reference_name: "",
+        reference_link: "",
+      },
+    ];
+    const chart = chartFromJson(JSON.stringify(rows), machine);
     await writeFile(config, configToJson({ machine, chart }));
 
     const result = await run([config, "--out", dir]);
