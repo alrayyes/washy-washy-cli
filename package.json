@@ -35,8 +35,8 @@
     "qs": "6.16.0"
   },
   "dependencies": {
-    "@washy-washy/core": "1.6.4",
-    "@washy-washy/pdf": "2.6.4"
+    "@washy-washy/core": "2.0.1",
+    "@washy-washy/pdf": "2.6.6"
   },
   "devDependencies": {
     "@biomejs/biome": "2.6.9",
