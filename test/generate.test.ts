@@ -129,6 +129,12 @@ describe("bun run generate", () => {
     expect(exitCode).toBe(0);
   });
 
+  // #353: only the warning's presence was asserted, so printing it for
+  // nothing went unnoticed.
+  test("says nothing about the font when every character renders", () => {
+    expect(stdout).not.toContain("Characters the font can't render");
+  });
+
   test("writes a phone PDF that is one continuous page", async () => {
     const pdf = await PDFDocument.load(await readFile(join(out, "washy-washy-phone.pdf")));
     expect(pdf.getPageCount()).toBe(1);
