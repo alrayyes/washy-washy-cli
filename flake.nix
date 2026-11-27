@@ -47,7 +47,7 @@
           };
           aarch64-linux = {
             bunArch = "arm64";
-            hash = "sha256-gZHUcxAvTkuOnpCaLB0WeCzagyBrqRFrhkFHc43GPVo=";
+            hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
           };
         }.${system};
 
