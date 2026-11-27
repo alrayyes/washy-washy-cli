@@ -192,6 +192,68 @@ jobs:
           done
           exit "$missing"
 
+  # flake.nix fetches these release assets by hash, so it can only move once
+  # they exist: not in release-please's own pull request. It opens a pull
+  # request instead, since nothing pushes to main (#337). A re-dispatch of the
+  # latest tag rebuilds the assets, and this refreshes the hashes to match.
+  update-flake:
+    needs: [release-please, build-packages]
+    if: |
+      always() &&
+      needs.build-packages.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TAG_NAME: ${{ needs.release-please.outputs.tag_name || inputs.tag }}
+    steps:
+      # main, not the tag: this edits the flake as it is now. RELEASE_TOKEN
+      # for the same reason release-please uses it -- a GITHUB_TOKEN push
+      # starts no checks, and the pull request could never go green.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          token: ${{ secrets.RELEASE_TOKEN }}
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+        with:
+          bun-version: 1.4.3
+
+      - name: Open a pull request pointing the flake at this release
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          # Re-dispatching an old tag must not take the flake backwards.
+          latest=$(gh release view --json tagName --jq .tagName)
+          if [ "$TAG_NAME" != "$latest" ]; then
+            echo "$TAG_NAME is not the latest release ($latest); leaving the flake alone."
+            exit 0
+          fi
+
+          assets="$RUNNER_TEMP/assets"
+          gh release download "$TAG_NAME" --dir "$assets" \
+            --pattern washy-washy-cli-linux-x64 \
+            --pattern washy-washy-cli-linux-arm64 \
+            --pattern washy-washy-cli.1.gz
+          bun run scripts/update-flake.ts "${TAG_NAME#v}" "$assets"
+          if git diff --quiet; then
+            echo "flake.nix already matches $TAG_NAME."
+            exit 0
+          fi
+
+          branch="chore/flake-$TAG_NAME"
+          title="chore(nix): update the flake to ${TAG_NAME#v}"
+          git switch -c "$branch"
+          git -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -am "$title"
+          # --force: a re-run replaces its own earlier attempt.
+          git push --force origin "$branch"
+          if [ -z "$(gh pr list --head "$branch" --json number --jq '.[].number')" ]; then
+            gh pr create --head "$branch" --base main --title "$title" --label nix \
+              --body "Points \`flake.nix\` at $TAG_NAME. The version and hashes come from that release's assets."
+          fi
+
   publish-aur:
     needs: [release-please, build-packages]
     if: |

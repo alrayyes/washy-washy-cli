@@ -305,6 +305,12 @@ two more jobs in `release.yml` itself, gated on `release-please`'s own
 `release_created` output, rather than a separate workflow listening for
 `release: published`.
 
+`flake.nix` follows one step behind. It fetches the release assets by hash, so
+after uploading them `release.yml` runs `scripts/update-flake.ts` and opens a
+`chore(nix):` pull request with the new version and hashes. Merge it: until then
+`nix run` still installs the previous release. Nothing in that file wants a hand
+edit for a release.
+
 `CHANGELOG.md` is written by `release-please`, and Prettier, markdownlint and
 Vale are all told to leave it alone. Its bullets are the tool's; reformatting
 them by hand only lasts until the next release.
