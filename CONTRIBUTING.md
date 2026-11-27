@@ -311,6 +311,10 @@ after uploading them `release.yml` runs `scripts/update-flake.ts` and opens a
 `nix run` still installs the previous release. Nothing in that file wants a hand
 edit for a release.
 
+Re-dispatching the latest tag is different: it replaces the assets the flake
+already pins, so `nix run` fails on a hash mismatch until that pull request
+merges.
+
 `CHANGELOG.md` is written by `release-please`, and Prettier, markdownlint and
 Vale are all told to leave it alone. Its bullets are the tool's; reformatting
 them by hand only lasts until the next release.

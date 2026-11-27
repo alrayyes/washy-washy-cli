@@ -22,4 +22,5 @@ test("a release opens a pull request updating the flake once its assets are up",
   expect(run).toContain("gh pr create");
   // GITHUB_TOKEN's pushes start no workflow run, so the checks would never report.
   expect(job?.steps.some((s) => s.env?.GH_TOKEN?.includes("secrets.RELEASE_TOKEN"))).toBe(true);
+  expect(job?.steps.some((s) => s.with?.token?.includes("secrets.RELEASE_TOKEN"))).toBe(true);
 });
