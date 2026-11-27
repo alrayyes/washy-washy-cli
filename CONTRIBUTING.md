@@ -296,12 +296,14 @@ release/dependency-bump pull request here gets — is what actually cuts the
 tag and GitHub release, via the API rather than a git push. Nothing here pushes
 to protected `main` directly, so no ruleset bypass is needed.
 
-`release-please` and the release auto-merge both use the `RELEASE_TOKEN` secret,
-a personal access token. The default `GITHUB_TOKEN` won't do: GitHub starts no
-further workflow run for what it does, to stop recursive runs. A release pull
-request opened with it would get no checks and never go green, and a merge made
-with it would not start `release.yml`, so nothing would be released
-([#188](https://github.com/alrayyes/washy-washy-cli/issues/188)).
+`release-please`, the release auto-merge and the flake update job all use the
+`RELEASE_TOKEN` secret, a personal access token. The default `GITHUB_TOKEN`
+won't do: to stop recursive runs, GitHub holds back workflow runs for what it
+does. A release pull request opened with it would have its checks held until
+someone approved them, and a merge made with it starts no `release.yml` run, so
+nothing would be released
+([#188](https://github.com/alrayyes/washy-washy-cli/issues/188),
+[GitHub's docs](https://docs.github.com/en/actions/concepts/security/github_token)).
 
 The OS packaging build — the compiled binaries, the man page, the
 `.deb`/`.rpm`, the AUR push — is further jobs in `release.yml` itself, gated on

@@ -5,10 +5,11 @@
 # pull request once green, matching the standing "release PRs auto-merge
 # on green" convention.
 #
-# It still takes a token of its own, RELEASE_TOKEN: GitHub starts no
-# further workflow run for what the default GITHUB_TOKEN does, to stop
-# recursive runs (#188). The OS packaging build is further jobs in this
-# workflow, gated on release-please's own `release_created` output.
+# It still takes a token of its own, RELEASE_TOKEN: with the default
+# GITHUB_TOKEN the release pull request's checks would wait for a manual
+# approval, and merging it would start no run of this workflow (#188). The
+# OS packaging build is further jobs here, gated on release-please's own
+# `release_created` output.
 name: release
 
 on:
