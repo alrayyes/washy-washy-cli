@@ -51,10 +51,12 @@
           };
         }.${system};
 
-        binary = pkgs.fetchurl {
+        asset = {
           url = "https://github.com/alrayyes/washy-washy-cli/releases/download/v${version}/washy-washy-cli-linux-${archInfo.bunArch}";
           hash = archInfo.hash;
         };
+
+        binary = pkgs.fetchurl asset;
 
         # Same release asset the AUR PKGBUILD installs -- already
         # scdoc-generated and gzipped by the release job's own `bun run
@@ -73,6 +75,9 @@
           inherit version;
 
           dontUnpack = true;
+
+          # CI reads this to check the hash of a system it can't build.
+          passthru = { inherit asset; };
           nativeBuildInputs = [ pkgs.installShellFiles ];
 
           installPhase = ''
