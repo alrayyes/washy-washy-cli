@@ -293,17 +293,20 @@ land on `main` and keeps a release pull request open, updating
 as more commits arrive. Merging that pull request — `release-auto-merge.yml`
 does this itself once it's green, the same standing exception every other
 release/dependency-bump pull request here gets — is what actually cuts the
-tag and GitHub release, via the API rather than a git push. That's the reason
-this needs no privileged bypass token the way the previous semantic-release
-setup did: nothing here ever pushes to protected `main` directly, so the
-default `GITHUB_TOKEN` is enough.
+tag and GitHub release, via the API rather than a git push. Nothing here pushes
+to protected `main` directly, so no ruleset bypass is needed.
 
-A tag or release the default token creates starts no further workflow run
-(GitHub refuses, to stop recursive runs), so the OS packaging build — the
-compiled binaries, the man page, the `.deb`/`.rpm`, the AUR push — lives as
-two more jobs in `release.yml` itself, gated on `release-please`'s own
-`release_created` output, rather than a separate workflow listening for
-`release: published`.
+`release-please` and the release auto-merge both use the `RELEASE_TOKEN` secret,
+a personal access token. The default `GITHUB_TOKEN` won't do: GitHub starts no
+further workflow run for what it does, to stop recursive runs. A release pull
+request opened with it would get no checks and never go green, and a merge made
+with it would not start `release.yml`, so nothing would be released
+([#188](https://github.com/alrayyes/washy-washy-cli/issues/188)).
+
+The OS packaging build — the compiled binaries, the man page, the
+`.deb`/`.rpm`, the AUR push — is further jobs in `release.yml` itself, gated on
+`release-please`'s own `release_created` output. The container image is
+`publish-image.yml`, which listens for `release: published`.
 
 `flake.nix` follows one step behind. It fetches the release assets by hash, so
 after uploading them `release.yml` runs `scripts/update-flake.ts` and opens a
