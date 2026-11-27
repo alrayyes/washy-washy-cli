@@ -504,8 +504,8 @@ jobs:
   # from source (see flake.nix's own comment for why: a `bun build
   # --compile` binary built with nixpkgs' own Bun links against the wrong
   # libicu/libstdc++). It's a required check, and the only build proof a
-  # change to the flake's version or hashes gets. x86_64 only: the
-  # aarch64-linux hash isn't fetched here.
+  # change to the flake's version or hashes gets. Only x86_64 is
+  # built; the aarch64-linux asset is downloaded and hashed.
   nix-flake:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -517,6 +517,14 @@ jobs:
       - run: nix flake check
       - run: nix build .#default
       - run: ./result/bin/washy-washy-cli --help
+      # The runner is x86_64, so nothing above fetches the arm64 binary.
+      # Download it and compare, which needs no arm64 builder.
+      - name: Check the aarch64-linux hash
+        run: |
+          asset=.#packages.aarch64-linux.default.asset
+          url=$(nix eval --raw "$asset.url")
+          hash=$(nix eval --raw "$asset.hash")
+          nix store prefetch-file --expected-hash "$hash" "$url"
 
   # Lays the test and coverage reports out as the site serves them. Runs on
   # pull requests too, so a broken assembly shows up before the merge; only the
