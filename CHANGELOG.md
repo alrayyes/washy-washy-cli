@@ -1,8 +1,4 @@
-## [2.16.0](https://github.com/alrayyes/washy-washy-cli/compare/v2.15.0...v2.16.0) (2026-08-22)
-
-### Features
-
-* validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
+# Changelog
 
 ## [4.0.2](https://github.com/alrayyes/washy-washy-cli/compare/v4.0.1...v4.0.2) (2026-11-27)
 
@@ -373,6 +369,12 @@
 ### Miscellaneous Chores
 
 * drop leftover CSV migration tooling and docs ([#141](https://github.com/alrayyes/washy-washy-cli/issues/141)) ([df27a32](https://github.com/alrayyes/washy-washy-cli/commit/df27a3286313df170912eabddc39b7da3f528db5)), closes [#140](https://github.com/alrayyes/washy-washy-cli/issues/140)
+
+## [2.16.0](https://github.com/alrayyes/washy-washy-cli/compare/v2.15.0...v2.16.0) (2026-08-22)
+
+### Features
+
+* validate-config and new-config commands, config schema autocomplete ([#112](https://github.com/alrayyes/washy-washy-cli/issues/112)) ([5fd7c1d](https://github.com/alrayyes/washy-washy-cli/commit/5fd7c1dc0f5436d271b1cd5ae48dd617dbed6557)), closes [#23](https://github.com/alrayyes/washy-washy-cli/issues/23)
 
 ## [2.15.0](https://github.com/alrayyes/washy-washy-cli/compare/v2.14.0...v2.15.0) (2026-08-22)
 
