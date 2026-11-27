@@ -17,9 +17,11 @@
       let
         pkgs = import nixpkgs { inherit system; };
 
-        # Kept in sync with .release-please-manifest.json by hand --
-        # release-please owns that file, not this one.
-        version = "3.1.2";
+        # The release this flake installs. scripts/update-flake.ts moves it
+        # and the three hashes below together, from release.yml once a
+        # release's assets exist -- release-please can't, since it bumps
+        # versions before there is anything to hash.
+        version = "4.0.1";
 
         # A prebuilt binary, wrapped rather than built from source --
         # unlike this account's Go/Python flakes (movie-planner,
@@ -41,11 +43,11 @@
         archInfo = {
           x86_64-linux = {
             bunArch = "x64";
-            hash = "sha256-EB8UVbTPTKdISznMxelPOtWUgEeLqRnJjFRYekdTRa0=";
+            hash = "sha256-3l2gL2jb6moeAT7AWINnpPu7Gb36V0v1CU8WHz/KUqY=";
           };
           aarch64-linux = {
             bunArch = "arm64";
-            hash = "sha256-YeL7yZou4ZL4URoyDrhuMuRrsco5QFs7AZ2miBrUykI=";
+            hash = "sha256-gZHUcxAvTkuOnpCaLB0WeCzagyBrqRFrhkFHc43GPVo=";
           };
         }.${system};
 
@@ -62,7 +64,7 @@
         manPage = pkgs.fetchurl {
           name = "washy-washy-cli.1.gz";
           url = "https://github.com/alrayyes/washy-washy-cli/releases/download/v${version}/washy-washy-cli.1.gz";
-          hash = "sha256-Z6eqQ0y9XN2KUWkir1iPqWsoSAvwxbojjOjkSqbVQZ8=";
+          hash = "sha256-GuyJUfKJrVNBq1wIZjpr/sj8x2Zazrm7OyAbEjjsUuY=";
         };
       in
       {
