@@ -21,7 +21,7 @@
         # and the three hashes below together, from release.yml once a
         # release's assets exist -- release-please can't, since it bumps
         # versions before there is anything to hash.
-        version = "4.0.2";
+        version = "4.0.3";
 
         # A prebuilt binary, wrapped rather than built from source --
         # unlike this account's Go/Python flakes (movie-planner,
@@ -43,11 +43,11 @@
         archInfo = {
           x86_64-linux = {
             bunArch = "x64";
-            hash = "sha256-3l2gL2jb6moeAT7AWINnpPu7Gb36V0v1CU8WHz/KUqY=";
+            hash = "sha256-jpWutfsQlcMiG3ZasK+2v96QR9Z+d006kVmotYkD/yw=";
           };
           aarch64-linux = {
             bunArch = "arm64";
-            hash = "sha256-gZHUcxAvTkuOnpCaLB0WeCzagyBrqRFrhkFHc43GPVo=";
+            hash = "sha256-u/xxAhZFX+LldVDtKyZ4YfmkI6qMHd4yYkpfGuNUDaM=";
           };
         }.${system};
 
@@ -66,7 +66,7 @@
         manPage = pkgs.fetchurl {
           name = "washy-washy-cli.1.gz";
           url = "https://github.com/alrayyes/washy-washy-cli/releases/download/v${version}/washy-washy-cli.1.gz";
-          hash = "sha256-HSzFJMY8c4FV0SOhXUN6aCn9ZyivJl2NsyNbGe/KXFA=";
+          hash = "sha256-P7f4dZnbGmcehLX7W976gjPq3fQErJmOGr3l0yGDULQ=";
         };
       in
       {
