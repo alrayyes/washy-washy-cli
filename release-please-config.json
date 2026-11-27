@@ -29,7 +29,6 @@
         "SECURITY.md",
         "biome.json",
         "bun.lock",
-        "bunfig.toml",
         "codecov.yml",
         "commitlint.config.js",
         "docs",
