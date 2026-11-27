@@ -32,6 +32,23 @@ jobs:
         with:
           bun-version: 1.4.3
       - run: bun install --frozen-lockfile
+      # #253. The subject is read live, so a retitle plus a rerun is enough. A
+      # one-commit pull request squashes under the commit's subject, not the
+      # title.
+      - name: A releasing commit type needs a change that ships
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+          pr="repos/$GITHUB_REPOSITORY/pulls/$PR"
+          subject=$(gh api "$pr" --jq .title)
+          if [ "$(gh api "$pr" --jq .commits)" = 1 ]; then
+            subject=$(gh api "$pr/commits" --jq '.[0].commit.message | split("\n")[0]')
+          fi
+          gh api --paginate "$pr/files" --jq '.[] | .filename, .previous_filename // empty' |
+            bun run scripts/release-type.ts "$subject"
       - run: bun run lint
       - run: bun run lint:md
       - run: bun run lint:package-json

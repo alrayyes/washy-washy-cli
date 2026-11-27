@@ -243,6 +243,19 @@ the next version. `feat:` takes the minor, `fix:` the patch, a
 `BREAKING CHANGE:` footer the major, and a branch of nothing but `docs:` and
 `chore:` releases nothing at all.
 
+Only a change that ships may use a releasing type: `src/`, `man/`, the example
+config in `data/`, or a `(deps)` bump of `package.json`/`bun.lock`. Anything
+else is `ci:`, `build:` or `chore:`, and the `check` job refuses the rest. A
+fix to the base image or the packaging files therefore waits for the next
+release.
+
+To ship one sooner, say for a security fix, end the squash message with a
+`Release-As: x.y.z` footer
+([release-please's docs](https://github.com/googleapis/release-please#how-do-i-change-the-version-number)).
+Put it on a commit that changes a file outside `exclude-paths`, such as the
+`Dockerfile`. release-please drops an empty commit here, and one that only
+touches excluded directories, footer and all.
+
 **The pull request title matters as much as the commits.** Merges here are
 squashes, so the title is what lands on `main` and the branch commits become
 the body. Give it the same Conventional Commit subject you would give the
