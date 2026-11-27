@@ -44,11 +44,10 @@ updates:
     directory: /
     schedule:
       interval: weekly
-    # The base image ships in publish-image.yml's built image, so a bump here
-    # changes what ships whether or not it's security-relevant - same
-    # reasoning as bun's production dependencies above.
+    # chore: so a base image bump doesn't release on its own (#253). It ships
+    # with the next release; CONTRIBUTING.md says how to force one sooner.
     commit-message:
-      prefix: fix
+      prefix: chore
       include: scope
 
   - package-ecosystem: nix

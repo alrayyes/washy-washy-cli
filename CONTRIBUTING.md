@@ -243,6 +243,13 @@ the next version. `feat:` takes the minor, `fix:` the patch, a
 `BREAKING CHANGE:` footer the major, and a branch of nothing but `docs:` and
 `chore:` releases nothing at all.
 
+Only a change that ships may use a releasing type: `src/`, `man/`, the example
+config in `data/`, or a `(deps)` bump of `package.json`/`bun.lock`. Anything
+else is `ci:`, `build:` or `chore:`, and the `check` job refuses the rest. A
+base image bump therefore waits for the next release. To ship one sooner, say
+for a security fix, merge a commit with a `Release-As: x.y.z` footer
+([release-please's docs](https://github.com/googleapis/release-please#how-do-i-change-the-version-number)).
+
 **The pull request title matters as much as the commits.** Merges here are
 squashes, so the title is what lands on `main` and the branch commits become
 the body. Give it the same Conventional Commit subject you would give the
