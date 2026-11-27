@@ -16,9 +16,8 @@
 # work on PRs from forks, and it means GitHub runs the workflow version on the
 # base branch rather than whatever a PR branch might have edited it to. `types`
 # mirrors @commitlint/config-conventional's list so the two checks agree on
-# what's a valid type. `synchronize` is required too, since this is a required
-# status check under branch protection with strict mode — without it, a push
-# to an open PR wouldn't re-run the check against the new commits.
+# what's a valid type. `synchronize` is listed too, so a push to an open PR
+# re-runs the check against the new head.
 name: pr-title
 
 on:

@@ -16,7 +16,8 @@ permissions:
   contents: read
 
 # A push that supersedes an older run cancels it rather than queueing behind it.
-# main is excluded: its runs are what the release job waits on.
+# main is excluded: cancelling a run there would skip its Pages deploy and
+# leave that commit unverified.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
