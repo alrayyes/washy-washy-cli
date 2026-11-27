@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.3](https://github.com/alrayyes/washy-washy-cli/compare/v4.0.2...v4.0.3) (2026-11-27)
+
+
+### Bug Fixes
+
+* **deps:** move to @washy-washy/core 2 ([#366](https://github.com/alrayyes/washy-washy-cli/issues/366)) ([3df05b8](https://github.com/alrayyes/washy-washy-cli/commit/3df05b8fdc6d645bd2dc583729109a73e22b5aad))
+
 ## [4.0.2](https://github.com/alrayyes/washy-washy-cli/compare/v4.0.1...v4.0.2) (2026-11-27)
 
 
