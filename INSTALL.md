@@ -3,7 +3,7 @@
 Four ways to get `washy-washy-cli` as a regular command, no Bun or Docker
 required. All four come from the same standalone binary, built once per
 release and published as GitHub Release assets — see
-`openspec/changes/add-os-packaging/design.md` for how.
+`openspec/changes/archive/2026-09-01-add-os-packaging/design.md` for how.
 
 ## Arch Linux (AUR)
 

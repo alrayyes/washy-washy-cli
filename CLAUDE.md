@@ -64,9 +64,9 @@ other one.
   `parseConfig` for real semantic validation instead of walking that schema
   — the schema is for editor autocomplete, not a second source of truth.
 - **Anything that writes a file for the repo must load `DIST_MACHINE`, not
-  `DEFAULT_MACHINE`.** The latter prefers your own appliances, so the schema
-  generator and the tests would otherwise bake in whatever machine the person
-  running them happens to own.
+  `DEFAULT_MACHINE`.** The latter prefers your own appliances, so the
+  tests would otherwise bake in whatever machine the person running them
+  happens to own.
 - **`mixing.ts`, in `@washy-washy/core`, is the only place that decides what
   can share a drum.** The per-card "wash together with" line, the
   compatibility matrix and the CLI summary all read from it, so a rule
@@ -84,8 +84,8 @@ other one.
 - **A sheet is defined by what it leaves out**, so `test/generate.test.ts`
   inflates the content streams and reads the words back. Adding an iron word to
   the washing sheet fails there, not in review.
-- **`biome.json` is strict JSON, not JSONC** — despite `tsconfig.json` and
-  `.releaserc.json` tolerating comments elsewhere in this repo, a `//` in
+- **`biome.json` is strict JSON, not JSONC** — despite `tsconfig.json`
+  tolerating comments elsewhere in this repo, a `//` in
   `biome.json` fails to parse and silently falls back to defaults, which then
   reformats every file in the repo (tabs instead of the configured spaces).
   Explain a rule choice in this file instead of inline there.

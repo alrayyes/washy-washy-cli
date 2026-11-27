@@ -53,7 +53,8 @@ jobs:
   # Bun installed via the official script inside a pinned
   # debian:bookworm-slim, not this repo's system/distro-packaged Bun and
   # not directly on the Actions runner -- both matter, see
-  # openspec/changes/add-os-packaging/design.md's Decisions section (an
+  # openspec/changes/archive/2026-09-01-add-os-packaging/design.md's
+  # Decisions section (an
   # older glibc baseline, and a distro-repackaged Bun links against a
   # specific ICU soname most real systems don't ship).
   build-packages:

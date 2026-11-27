@@ -48,13 +48,12 @@ drum; that logic lives one dependency bump away in the packages themselves.
   `configFromJson`: resolves `data/washy-washy.json`, falling back to the
   committed `.dist`, reads it as text and hands it to the parser.
 - **`src/machine.ts`** — `DEFAULT_MACHINE`/`DIST_MACHINE` path constants and
-  `loadMachine`, kept for the tests and `migrate-config` that still need a
-  bare `Machine` outside the combined config; not part of the CLI's own
-  input path.
+  `loadMachine`, kept for the tests that still need a bare `Machine` outside
+  the combined config; not part of the CLI's own input path.
 - **`scripts/`** — everything that is a command in its own right rather than
   part of a run: `new-config.ts` and `validate-config.ts` back the
-  `new-config`/`validate-config` `package.json` scripts, `migrate-config.ts` converts
-  the old two-file setup, `screenshots.ts` re-shoots the README's PNGs, and
+  `new-config`/`validate-config` `package.json` scripts, `screenshots.ts`
+  re-shoots the README's PNGs, and
   `install-vale.ts`/`lint-prose-ltex.ts`/`vale-release.ts` are the prose
   tooling described above.
 - **`data/`** — `washy-washy.json` is your own config, gitignored;
@@ -274,7 +273,7 @@ And where it lands:
 
 - `topic/pdf` — rendering, layout and page fitting
 - `topic/chart` — the chart config and the mixing rules
-- `topic/appliances` — the machine file and what it validates
+- `topic/appliances` — the config's `machine` key and what it validates
 - `topic/release` — CI, hooks, release-please and the image
 - `topic/docs` — this file, the README and the prose linters
 - `topic/web` — the web app, out of scope for this repo except where core
@@ -318,7 +317,8 @@ edit for a release.
 
 Re-dispatching the latest tag is different: it replaces the assets the flake
 already pins, so `nix run` fails on a hash mismatch until that pull request
-merges.
+merges. `nix-flake` is a required check, so other pull requests are blocked
+until then too.
 
 `CHANGELOG.md` is written by `release-please`, and Prettier, markdownlint and
 Vale are all told to leave it alone. Its bullets are the tool's; reformatting

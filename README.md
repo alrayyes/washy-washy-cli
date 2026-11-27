@@ -40,7 +40,7 @@ Nothing here translates a fascia label, ever. If the dial says `Fijn/Zijde`, the
 card says `Fijn/Zijde` — a chart you have to translate back while standing in
 front of the machine is worse than no chart. Everything the tool says _about_
 the machine is in English; everything printed _on_ the machine is whatever you
-typed into the machine file.
+typed under the config's `machine` key.
 
 It also answers the question that actually causes arguments: what can go in
 together. Piles are grouped into loads, each card names its bedfellows, and the
@@ -114,11 +114,11 @@ bun run generate
 ```text
 Read 17 piles from /home/you/washy-washy/data/washy-washy.json.dist
   drawn for Generic front loader · Generic steam iron
-  out/washy-washy-phone.pdf  one page, 6837 pt tall (11 layout passes)
+  out/washy-washy-phone.pdf  one page, 7017 pt tall (11 layout passes)
   out/washy-washy-print.pdf
-  out/washy-washy-phone-washing.pdf  one page, 4756 pt tall (10 layout passes)
+  out/washy-washy-phone-washing.pdf  one page, 4909 pt tall (10 layout passes)
   out/washy-washy-print-washing.pdf
-  out/washy-washy-phone-ironing.pdf  one page, 1059 pt tall (9 layout passes)
+  out/washy-washy-phone-ironing.pdf  one page, 1072 pt tall (9 layout passes)
   out/washy-washy-print-ironing.pdf
   16 card PDFs, one per pile or shared-card group
 

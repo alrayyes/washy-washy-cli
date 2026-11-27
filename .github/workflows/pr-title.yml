@@ -1,7 +1,7 @@
 # Merges here are squashes, so the pull request title becomes the subject of the
 # commit that lands on main and the branch commits become its body. The `commits`
 # job in ci.yml lints the branch — which is exactly the half a squash throws
-# away. Nothing read the title, and semantic-release reads nothing else.
+# away. Nothing read the title, and the release tool reads nothing else.
 #
 # That gap cost a release. #22 was a `feat:` on the branch, went green, and
 # landed as "Cut the chart into a washing sheet and an ironing sheet (#22)": no

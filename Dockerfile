@@ -1,8 +1,7 @@
 # Runs the generator without a bun on the host: mount a chart in, get PDFs out.
 #
-# Alpine, unlike the CI images, which need glibc for the prose linters. Nothing
-# in the generator is a native binary — it is TypeScript, bun and pure-JS
-# dependencies — so musl is no obstacle and the image stays small.
+# Alpine: nothing in the generator is a native binary — it is TypeScript, bun
+# and pure-JS dependencies — so musl is no obstacle and the image stays small.
 
 # Dependencies in their own stage, so the runtime image never sees a lockfile,
 # a dev dependency or a package manager. --production drops Biome, Prettier,
