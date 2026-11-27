@@ -11,12 +11,6 @@
 // specifically for `bun:test` per-test coverage via Bun's Inspector
 // Protocol. Same evaluation and choice as `washy-washy-core`#67
 // (https://github.com/alrayyes/washy-washy-core/pull/72).
-//
-// `@stryker-mutator/core` is pinned to 9.6.1, not the current 10.0.0:
-// both community Bun runners still peer-depend on `^9.0.0`
-// (`@stryker-mutator/core@10.0.0` shipped 2026-08-14, after either
-// runner's last release), and `inPlace: true` below is required for an
-// unrelated reason — see that option's comment.
 /** @type {import("@stryker-mutator/api/core").PartialStrykerOptions} */
 export default {
   // Stryker's default plugin glob is "@stryker-mutator/*" — the bun runner

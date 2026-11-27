@@ -42,7 +42,7 @@ ignores:
   # skill and command docs belong to the OpenSpec CLI, not to this repo's
   # prose conventions.
   - ".claude/**"
-  # Written by semantic-release from the commit subjects, and committed by the
-  # release job without passing through any hook. Linting it means failing a
-  # run over prose no human chose and no human can fix in place.
+  # Written by release-please from the commit subjects, without passing through
+  # any hook. Linting it means failing a run over prose no human chose and no
+  # human can fix in place.
   - "CHANGELOG.md"

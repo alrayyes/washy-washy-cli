@@ -84,8 +84,7 @@ existing Conventional-Commits-driven release.
 
 #### Scenario: Packages publish themselves on a green release
 
-- **WHEN** `check` passes on `main` and semantic-release cuts a new
-  version
+- **WHEN** release-please cuts a new version
 - **THEN** the binaries, `.deb`, `.rpm`, man page, and AUR update all
   publish automatically, the same way `publish-image.yml` already
   publishes the container image on `release: published`

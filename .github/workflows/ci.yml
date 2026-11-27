@@ -16,7 +16,8 @@ permissions:
   contents: read
 
 # A push that supersedes an older run cancels it rather than queueing behind it.
-# main is excluded: its runs are what the release job waits on.
+# main is excluded: cancelling a run there would skip its Pages deploy and
+# leave that commit unverified.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -105,7 +106,7 @@ jobs:
       - run: bun run mutation
 
   # The commit-msg hook already reads every message, but a hook is skippable and
-  # these messages are load-bearing: semantic-release reads the Conventional
+  # these messages are load-bearing: release-please reads the Conventional
   # Commits that landed to decide the next version, so a stray "wip" is a
   # release that does not happen. Pull requests only — there is no range to
   # check on a push, and rewriting history to fix an old message is worse than
@@ -261,8 +262,9 @@ jobs:
   # above, applied to AUR/deb/rpm. Each builds its own binary and package
   # locally rather than fetching a published release, so these catch a
   # regression on every pull request, not only after a real release
-  # exists to test against. See openspec/changes/add-os-packaging/
-  # design.md for why the build step specifically needs Bun's official
+  # exists to test against. See
+  # openspec/changes/archive/2026-09-01-add-os-packaging/design.md
+  # for why the build step specifically needs Bun's official
   # installer (not a distro package) and, for deb, why the install step
   # needs the non-slim Debian image.
   deb-install:

@@ -1,9 +1,9 @@
 /**
  * Where Vale comes from. Pinned here rather than in package.json because the
  * npm wrapper (@vvago/vale) downloads its binary from a postinstall that runs
- * `node index.js` — and the CI image has bun and no node, so it installs a
- * package with an empty bin directory and nothing says so until the linter is
- * called and the shell reports 127.
+ * `node index.js` — so a host with bun and no node installs a package with an
+ * empty bin directory, and nothing says so until the linter is called and the
+ * shell reports 127.
  */
 export const VALE_VERSION = "3.17.1";
 

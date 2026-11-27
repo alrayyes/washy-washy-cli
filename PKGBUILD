@@ -1,8 +1,9 @@
 # Maintainer: Ryan Kes <ryan@andthensome.nl>
 #
 # Binary package: the release job already produces a Bun-compiled,
-# self-contained Linux binary per arch (see openspec/changes/
-# add-os-packaging/design.md) and this just places it, plus the man
+# self-contained Linux binary per arch (see
+# openspec/changes/archive/2026-09-01-add-os-packaging/design.md)
+# and this just places it, plus the man
 # page. No build() step, no makedepends -- there is nothing to compile.
 #
 # source= points at github.com release assets, never the internal forge

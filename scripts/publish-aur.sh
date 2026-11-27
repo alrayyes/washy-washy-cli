@@ -2,9 +2,9 @@
 # Publishes/updates the washy-washy-cli-bin AUR package for one release.
 # Run from the repo root with VERSION set (the tag without its leading
 # "v", e.g. "1.2.3") and an SSH key for the AUR's `aur` user already
-# loaded (CI: the AUR_SSH_KEY secret; see openspec/changes/
-# add-os-packaging/design.md for why this is a shared, dedicated key
-# rather than anyone's personal one).
+# loaded (CI: the AUR_SSH_KEY secret; see
+# openspec/changes/archive/2026-09-01-add-os-packaging/design.md
+# for why this is a shared, dedicated key rather than anyone's personal one).
 #
 # The AUR repo is a separate git history from this one -- it's cloned
 # fresh into a scratch directory each run, not kept as a subtree here.

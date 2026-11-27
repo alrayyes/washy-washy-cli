@@ -13,9 +13,9 @@ export const DEFAULT_MACHINE = "data/machine.json";
 /**
  * The committed machine, named explicitly.
  *
- * Anything that produces a file for the repository — the tests, the
- * migration script — has to read this rather than `DEFAULT_MACHINE`, or it
- * describes whichever appliances the person running it happens to own.
+ * Anything that produces a file for the repository, and the tests, has to
+ * read this rather than `DEFAULT_MACHINE`, or it describes whichever
+ * appliances the person running it happens to own.
  */
 export const DIST_MACHINE = `${DEFAULT_MACHINE}.dist`;
 
