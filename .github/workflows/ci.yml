@@ -503,9 +503,9 @@ jobs:
   # jobs, this one fetches a real GitHub Release asset rather than building
   # from source (see flake.nix's own comment for why: a `bun build
   # --compile` binary built with nixpkgs' own Bun links against the wrong
-  # libicu/libstdc++). That means this job can only go green once a real
-  # release has actually published washy-washy-cli-linux-x64/.1.gz assets
-  # -- blocked until #159 merges and that release gets re-dispatched.
+  # libicu/libstdc++). It's a required check, and the only build proof a
+  # change to the flake's version or hashes gets. x86_64 only: the
+  # aarch64-linux hash isn't fetched here.
   nix-flake:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -520,12 +520,12 @@ jobs:
 
   # Lays the test and coverage reports out as the site serves them. Runs on
   # pull requests too, so a broken assembly shows up before the merge; only the
-  # upload below is main-only. It waits on every gate the branch protection
-  # requires, so the reports always describe a commit that passed them. The
-  # PR-only jobs (commits, dependency-review) and nix-flake, which stays red
-  # until a release exists, are left out: a skipped need would skip this too.
+  # upload below is main-only. It waits on the gates in this workflow that the
+  # branch protection requires, so the reports always describe a commit that
+  # passed them. The PR-only jobs (commits, dependency-review) are left out: a
+  # skipped need would skip this too.
   reports:
-    needs: [check, mutation, ltex, vale, dockerfile, pdfs]
+    needs: [check, mutation, ltex, vale, dockerfile, pdfs, nix-flake]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
