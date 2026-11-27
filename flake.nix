@@ -21,7 +21,7 @@
         # and the three hashes below together, from release.yml once a
         # release's assets exist -- release-please can't, since it bumps
         # versions before there is anything to hash.
-        version = "4.0.1";
+        version = "4.0.2";
 
         # A prebuilt binary, wrapped rather than built from source --
         # unlike this account's Go/Python flakes (movie-planner,
@@ -64,7 +64,7 @@
         manPage = pkgs.fetchurl {
           name = "washy-washy-cli.1.gz";
           url = "https://github.com/alrayyes/washy-washy-cli/releases/download/v${version}/washy-washy-cli.1.gz";
-          hash = "sha256-GuyJUfKJrVNBq1wIZjpr/sj8x2Zazrm7OyAbEjjsUuY=";
+          hash = "sha256-HSzFJMY8c4FV0SOhXUN6aCn9ZyivJl2NsyNbGe/KXFA=";
         };
       in
       {
