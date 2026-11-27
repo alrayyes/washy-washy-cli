@@ -26,14 +26,13 @@ These are repository secrets under Settings → Secrets and variables →
 Actions, not variables you export locally. Listed here so a workflow change
 doesn't leave someone guessing what they're for.
 
-| Variable        | Used by                         | Controls                                                                                                                                                         | Dummy value                            |
-| --------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| `CODECOV_TOKEN` | `.github/workflows/ci.yml`      | Uploads coverage from the `check` job to Codecov                                                                                                                 | `00000000-0000-0000-0000-000000000000` |
-| `AUR_SSH_KEY`   | `.github/workflows/release.yml` | SSH deploy key for `aur@aur.archlinux.org`, dedicated to this purpose (a shared key also used by other repos, not a personal one) — see `scripts/publish-aur.sh` | an ed25519 private key, PEM-formatted  |
+| Variable        | Used by                           | Controls                                                                                                                                                                      | Dummy value                            |
+| --------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| `CODECOV_TOKEN` | `.github/workflows/ci.yml`        | Uploads coverage from the `check` job to Codecov                                                                                                                              | `00000000-0000-0000-0000-000000000000` |
+| `AUR_SSH_KEY`   | `.github/workflows/release.yml`   | SSH deploy key for `aur@aur.archlinux.org`, dedicated to this purpose (a shared key also used by other repos, not a personal one) — see `scripts/publish-aur.sh`              | an ed25519 private key, PEM-formatted  |
+| `RELEASE_TOKEN` | `release.yml`, `*-auto-merge.yml` | Personal access token for release pull requests, the flake update and auto-merge. Needs workflow permission, or Dependabot can't merge Actions bumps. `GITHUB_TOKEN` won't do | `github_pat_dummy`                     |
 
-No `RELEASE_TOKEN` any more: `release-please` cuts a release through the
-GitHub API once its own pull request merges, never a direct push to `main`,
-so the default `GITHUB_TOKEN` is enough — see
+Why the release needs its own token is under
 [CONTRIBUTING.md → Releasing](CONTRIBUTING.md#releasing).
 
 No feature flags, no database, no auth and no third-party API keys — this

@@ -1,17 +1,15 @@
 # release-please decides the version and opens/updates a release pull
 # request; merging that PR is what makes it cut the tag and GitHub
-# release (via the API, not a git push) -- so unlike the old
-# semantic-release setup, nothing here ever pushes to `main` and no
-# privileged bypass token is needed. release-auto-merge.yml merges that
+# release (via the API, not a git push), so nothing here pushes to `main`
+# and no ruleset bypass is needed. release-auto-merge.yml merges that
 # pull request once green, matching the standing "release PRs auto-merge
 # on green" convention.
 #
-# A tag/release created by the default GITHUB_TOKEN starts no further
-# workflow run (GitHub refuses, to stop recursive runs), so the OS
-# packaging build has to be a second and third job in this same
-# workflow, gated on release-please's own `release_created` output --
-# not a separate `on: release: published` workflow, which would never
-# fire.
+# It still takes a token of its own, RELEASE_TOKEN: with the default
+# GITHUB_TOKEN the release pull request's checks would wait for a manual
+# approval, and merging it would start no run of this workflow (#188). The
+# OS packaging build is further jobs here, gated on release-please's own
+# `release_created` output.
 name: release
 
 on:
